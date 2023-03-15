@@ -16,10 +16,12 @@ def validate_line_to_standard(line):
     url = line.split("-")[0][:-1]
     # checking if characters are correct for URL/host address
     if not (re.search("[^A-Za-z0-9!$&\'+,;@:?#_.~*()%=-\[\]]", url) is None):
-        raise Exception("Incorrect format of URL/Hostname at line " + line_stamp)
+        raise Exception(
+            "Incorrect format of URL/Hostname at line " + line_stamp)
 
     # splitting the date to check it (without leap years)
-    date = re.split("[\s/:]", re.findall("(?<=\[)(.*)(?=\])", line)[0])  # this finds the date and splits it
+    # this finds the date and splits it
+    date = re.split("[\s/:]", re.findall("(?<=\[)(.*)(?=\])", line)[0])
     # checking if months and days are correctly correlated
     if len(date) != 7 or any(int(num) < 0 for num in date[:1] + date[2:6]) or not (
             date[1] in date_dictionary and date_dictionary[date[1]] >= int(date[0])):
@@ -42,9 +44,18 @@ def validate_line_to_standard(line):
         try:
             bit_size_num = int(bit_size)
         except ValueError as err:
-            raise Exception("Error code and bit size must be numbers if error is not 404 " + line_stamp) from err
+            raise Exception(
+                "Error code and bit size must be numbers if error is not 404 " + line_stamp) from err
         else:
             if bit_size_num < 0:
                 raise Exception("Bit size must be positive" + line_stamp)
 
     return line
+
+
+def validate_and_handle_exceptions(line):
+    try:
+        validate_line_to_standard(line)
+        return True
+    except Exception:
+        pass

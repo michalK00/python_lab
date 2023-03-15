@@ -1,18 +1,21 @@
 import sys
+import file_printer
+import line_validator
 
 
-def funA():
+def count_all_codes():
     codes = {200: 0, 302: 0, 404: 0, "undefined": 0}
     for line in sys.stdin:
-        words = line.split()
-        code = int(words[-2])
-        if code in codes:
-            codes[code] += 1
-        else:
-            codes["undefined"] += 1
+        if line_validator.validate_and_handle_exceptions(line):
+            words = line.split()
+            code = int(words[-2])
+            if code in codes:
+                codes[code] += 1
+            else:
+                codes["undefined"] += 1
 
-    print(codes)
+    file_printer.print_to_stdout(codes)
 
 
 if __name__ == "__main__":
-    funA()
+    count_all_codes()
