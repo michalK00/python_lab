@@ -6,12 +6,12 @@ date_dictionary = {"Jan": 31, "Feb": 29, "Mar": 31, "Apr": 30,
                    "Sep": 30, "Oct": 31, "Nov": 30, "Dec": 31}
 
 
-def validate_line_to_standard(line, line_number):
-    line_stamp = f" at line: {str(line_number)}, \"{line}\""
+def validate_line_to_standard(line):
+    line_stamp = f"\"{line}\""
     words = line.split()
 
-    if len(words) != 10:
-        raise Exception("Incorrect formatting at line: " + line_stamp)
+    # if len(words) != 10:
+    #    raise Exception("Incorrect formatting at line: " + line_stamp)
 
     url = line.split("-")[0][:-1]
     # checking if characters are correct for URL/host address
@@ -34,14 +34,17 @@ def validate_line_to_standard(line, line_number):
     if not (re.search("[<>\"|\\?*:]", path) is None):
         raise Exception("Incorrect path at line " + line_stamp)
 
-    # check if bit size and error number are numbers, and whether the bit size is positive
-    try:
-        bit_size = int(words.pop())
-        int(words.pop())
-    except ValueError as err:
-        raise Exception("Error code and bit size must be numbers" + line_stamp) from err
-    else:
-        if bit_size < 0:
-            raise Exception("Bit size must be positive" + line_stamp)
+    # check if bit size and error number are correct
+    bit_size = words.pop()
+    error_message = words.pop()
+
+    if not (error_message == "404" or bit_size == "-"):
+        try:
+            bit_size_num = int(bit_size)
+        except ValueError as err:
+            raise Exception("Error code and bit size must be numbers if error is not 404 " + line_stamp) from err
+        else:
+            if bit_size_num < 0:
+                raise Exception("Bit size must be positive" + line_stamp)
 
     return line
