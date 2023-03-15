@@ -1,7 +1,7 @@
 import line_validator
 import file_printer
-import friday_printer
-import polish_site_printer
+import fun_G
+import fun_H
 import sys
 
 if __name__ == '__main__':
