@@ -28,6 +28,6 @@ def read_logs():
 
             status_code = int(words[-2])
 
-            logs += (url, date, path, status_code, bit_size)
+            logs.append(tuple([url, date, path, status_code, bit_size]))
 
     return logs
