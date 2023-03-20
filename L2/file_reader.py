@@ -7,5 +7,6 @@ def read_file_from_stdin(function):
     for line in sys.stdin:
         try:
             function(line_validator.validate_line_to_standard(line))
-        except Exception:
+        except Exception as err:
             pass
+            #print(err, file=sys.stderr)

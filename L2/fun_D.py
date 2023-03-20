@@ -17,7 +17,7 @@ def check_percent_of_graphics_resources():
                     graphical_resource_count += 1
 
     file_printer.print_to_stdout(
-        f"Percent of graphics in all downloaded resources {graphical_resource_count / all_resouces_count:.2f}%")
+        f"Percent of graphics in all downloaded resources {graphical_resource_count / all_resouces_count:.2f}")
 
 
 if __name__ == "__main__":
