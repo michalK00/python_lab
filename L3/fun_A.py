@@ -20,9 +20,14 @@ def read_logs():
             path = re.findall("(?<=\")(.*)(?=\")", line)[0]
 
             words = line.split()
-            bit_size = int(words.pop())
-            error_message = int(words.pop())
 
-            logs += (url, date, path, error_message, bit_size)
+            if words[-1] == '-':
+                bit_size = 0
+            else:
+                bit_size = int(words[-1])
+
+            status_code = int(words[-2])
+
+            logs += (url, date, path, status_code, bit_size)
 
     return logs
