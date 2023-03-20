@@ -12,7 +12,6 @@ def read_logs():
         except Exception as err:
             pass
         else:
-
             url = re.findall("^(.+?) -", line)[0]
             date_split = re.split(
                 "[\s/:]", re.findall("(?<=\[)(.*)(?=\])", line)[0])
