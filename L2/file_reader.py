@@ -9,4 +9,4 @@ def read_file_from_stdin(function):
             function(line_validator.validate_line_to_standard(line))
         except Exception as err:
             pass
-            #print(err, file=sys.stderr)
+            # print(err, file=sys.stderr)

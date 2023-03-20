@@ -5,7 +5,7 @@ import datetime
 
 
 def read_logs():
-    logs = []
+    logs = list()
     for line in sys.stdin:
         try:
             line_validator.validate_line_to_standard(line)
@@ -13,8 +13,9 @@ def read_logs():
             pass
         else:
 
-            url = re.search("^(.+?) -", line)
-            date_split = re.split("[\s/:]", re.findall("(?<=\[)(.*)(?=\])", line)[0])
+            url = re.findall("^(.+?) -", line)[0]
+            date_split = re.split(
+                "[\s/:]", re.findall("(?<=\[)(.*)(?=\])", line)[0])
             date = datetime.datetime(int(date_split[2]), datetime.datetime.strptime(date_split[1], "%b").month,
                                      int(date_split[0]))
             path = re.findall("(?<=\")(.*)(?=\")", line)[0]

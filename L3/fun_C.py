@@ -1,4 +1,5 @@
 import re
+import fun_A as reader
 
 
 def get_entries_by_addr(logs, address):
@@ -17,5 +18,4 @@ def validate_address(address):
 
 
 if __name__ == "__main__":
-    print(get_entries_by_addr(
-        [("192.168.0.1", "log1"), ("ad€am", "log2")], "ad€am"))
+    get_entries_by_addr(reader.read_logs, "wt.interlog.com")
