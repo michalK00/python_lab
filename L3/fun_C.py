@@ -1,8 +1,8 @@
 import re
 import sys
-import fun_G
-import fun_A as reader
-import fun_G as printer
+import fun_A as Reader
+import fun_G as Printer
+import console_input_checker
 
 
 def get_entries_by_addr(logs, address):
@@ -18,4 +18,5 @@ def validate_address(address):
 
 
 if __name__ == "__main__":
-    fun_G.print_entries(get_entries_by_addr(reader.read_logs(), sys.argv[1]))
+    console_input_checker.check_console_input("Input URL", lambda: Printer.print_entries(
+        get_entries_by_addr(Reader.read_logs(), sys.argv[1])))

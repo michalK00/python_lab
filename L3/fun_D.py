@@ -1,6 +1,7 @@
 import fun_A
 import fun_G
 import sys
+import console_input_checker
 
 
 def get_entries_by_code(list_of_tuples, status_code):
@@ -18,4 +19,5 @@ def get_entries_by_code(list_of_tuples, status_code):
 
 
 if __name__ == "__main__":
-    fun_G.print_entries(get_entries_by_code(fun_A.read_logs(), sys.argv[1]))
+    console_input_checker.check_console_input("Input code", lambda: fun_G.print_entries(
+        get_entries_by_code(fun_A.read_logs(), sys.argv[1])))
