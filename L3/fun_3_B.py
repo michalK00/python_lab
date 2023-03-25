@@ -1,5 +1,4 @@
 import fun_A
-import fun_G
 import fun_3_A
 
 

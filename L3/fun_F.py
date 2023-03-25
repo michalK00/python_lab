@@ -1,5 +1,6 @@
 import fun_A
 import fun_G
+import sys
 
 
 def get_entries_extension(list_of_tuples, extension):
@@ -13,4 +14,4 @@ def get_entries_extension(list_of_tuples, extension):
 
 
 if __name__ == "__main__":
-    fun_G.print_entries(get_entries_extension(fun_A.read_logs(), "gif"))
+    fun_G.print_entries(get_entries_extension(fun_A.read_logs(), sys.argv[1]))

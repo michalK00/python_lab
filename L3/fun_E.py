@@ -1,5 +1,6 @@
 import fun_G
 import fun_A
+import sys
 
 
 def get_failed_reads(list_of_tuples, if_extended_lists=True):
@@ -19,4 +20,9 @@ def get_failed_reads(list_of_tuples, if_extended_lists=True):
 
 
 if __name__ == "__main__":
-    fun_G.print_entries(get_failed_reads(fun_A.read_logs(), True))
+    if len(sys.argv) == 2:
+        call_fun = get_failed_reads(fun_A.read_logs(), if_extended_lists=bool(sys.argv[1]))
+    else:
+        call_fun = get_failed_reads(fun_A.read_logs())
+
+    fun_G.print_entries(call_fun)
