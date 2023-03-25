@@ -8,10 +8,12 @@ def log_to_dict(list_of_tuples):
 
     for tuple_log in list_of_tuples:
         if tuple_log[0] in dictionary_of_ips:
-            dictionary_of_ips[tuple_log[0]].append(fun_3_A.entry_to_dict(tuple_log))
+            dictionary_of_ips[tuple_log[0]].append(
+                fun_3_A.entry_to_dict(tuple_log))
         else:
-            dictionary_of_ips[tuple_log[0]] = list(fun_3_A.entry_to_dict(tuple_log))
-
+            dictionary_of_ips[tuple_log[0]] = list()
+            dictionary_of_ips[tuple_log[0]].append(
+                fun_3_A.entry_to_dict(tuple_log))
     return dictionary_of_ips
 
 
