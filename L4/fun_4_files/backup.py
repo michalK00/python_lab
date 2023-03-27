@@ -1,20 +1,26 @@
+import sys
 import os
 import shutil
 from datetime import datetime
 import json
+import dotenv
+
+dotenv.load_dotenv()
+
 
 # dst_path = os.path.join(os.environ["HOMEPATH"], "Desktop") + "/test" pulpit
-if os.getenv("BACKUPS_DIR") is None:
-    os.environ["BACKUPS_DIR"] = "./.backups"
+# if os.getenv("BACKUPS_DIR") is None:
+# os.environ["BACKUPS_DIR"] = "./.backups"
+
+json_path = f"{os.getenv('BACKUPS_DIR')}/backups_history.json"
+curr_timestamp = datetime.now()
 
 
 def file_name(backup_path):
-    return f"{os.getenv('BACKUPS_DIR')}/{datetime.timestamp(datetime.now())}-"f"{os.path.basename(os.path.abspath(backup_path))}"
+    return f"{os.getenv('BACKUPS_DIR')}/{datetime.timestamp(curr_timestamp)}-"f"{os.path.basename(os.path.abspath(backup_path))}"
 
 
 def create_json_for_backup(backup_path):
-    json_path = f"{os.getenv('BACKUPS_DIR')}/backups_history.json"
-
     if not os.path.exists(json_path):
         with open(json_path, 'w') as json_file:
             json.dump([], json_file)
@@ -24,7 +30,7 @@ def create_json_for_backup(backup_path):
 
     with open(json_path, 'w') as json_file:
         file_data.append({
-            "data": str(datetime.now()),
+            "data": str(curr_timestamp),
             "localization": os.path.abspath(backup_path),
             "name_of_file": file_name(backup_path)
         })
@@ -38,7 +44,7 @@ def copy_files_to_zip(src_path):
 
 
 if __name__ == "__main__":
-    copy_files_to_zip("./fun_4_files/TEST")
-    # print(dst_path)
-    # if len(sys.argv) == 2:
-    #    sys.argv[1]
+    if len(sys.argv) == 2:
+        copy_files_to_zip(sys.argv[1])
+    else:
+        copy_files_to_zip("./TEST")
