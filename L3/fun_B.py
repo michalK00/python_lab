@@ -1,4 +1,5 @@
 import fun_A as reader
+import sys
 
 
 def sort_log(logs, param):
@@ -13,4 +14,4 @@ def sort_log(logs, param):
 
 
 if __name__ == "__main__":
-    sort_log(reader.read_logs(), -2)
+    sort_log(reader.read_logs(), sys.argv[1])
