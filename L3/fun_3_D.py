@@ -1,7 +1,6 @@
 import fun_3_B
 import fun_A
 from prettytable import PrettyTable
-# próbowałem zainstalować z pipenv ale coś mi nie działało
 
 
 def print_dict_entry_dates(dict):

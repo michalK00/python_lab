@@ -2,7 +2,7 @@ import fun_3_B
 import fun_A
 
 
-def get_addrs(dictionary_of_ips):   # chyba chodzi o to?
+def get_addrs(dictionary_of_ips):
     list_of_addrs = []
     for key in dictionary_of_ips.keys():
         list_of_addrs.append(key)
