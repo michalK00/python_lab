@@ -1,6 +1,5 @@
 import sys
 import os
-import console_input_checker as input_checker
 from subprocess import run
 import json
 from prettytable import PrettyTable
@@ -50,4 +49,7 @@ def printResults(results):
 
 
 if __name__ == "__main__":
-    launch_scripts(sys.argv[1])
+    if len(sys.argv) == 2:
+        launch_scripts(sys.argv[1])
+    else:
+        raise ValueError("No path given!")
