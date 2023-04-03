@@ -41,6 +41,12 @@ if __name__ == "__main__":
 
     amount = list_all_changes()
 
+    file_path = os.path.abspath(file_path)
+
+    if not os.path.isdir(file_path):
+        print(file_path)
+        os.mkdir(file_path)
+
     bring_backup(int(input("Input number of backup: ")), file_path, amount)
 
     # zczytuje wartość zmiennej środowiskowej i ustawia w pliku .env na nową wartość
