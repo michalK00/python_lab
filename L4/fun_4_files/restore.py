@@ -28,7 +28,8 @@ def bring_backup(number_of_backup, directory, amount_of_lines):
         file_data = json.load(json_file)
 
     shutil.rmtree(file_path)
-    shutil.unpack_archive(os.path.abspath(file_data[number_of_backup]["name_of_file"]) + ".zip", directory)
+    shutil.unpack_archive(os.path.abspath(
+        file_data[number_of_backup]["name_of_file"]) + ".zip", directory)
 
 
 if __name__ == "__main__":
@@ -43,4 +44,5 @@ if __name__ == "__main__":
     bring_backup(int(input("Input number of backup: ")), file_path, amount)
 
     # zczytuje wartość zmiennej środowiskowej i ustawia w pliku .env na nową wartość
-    dotenv.set_key(dotenv.find_dotenv(), "BACKUPS_DIR", os.environ["BACKUPS_DIR"])
+    dotenv.set_key(dotenv.find_dotenv(), "BACKUPS_DIR",
+                   os.environ["BACKUPS_DIR"])
