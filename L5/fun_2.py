@@ -6,9 +6,9 @@ from datetime import datetime
 
 def get_ipv4s_from_log(row):
     ip_regex = r'(?:\d{1,3}\.){3}\d{1,3}'
-    match = re.search(ip_regex, row)
+    match = re.findall(ip_regex, row)
     if match:
-        return match.group(0)
+        return match
     return None
 
 
@@ -72,8 +72,12 @@ def getDict(row):
     row_dict = {
         "date": get_date(row),
         "user": get_user_from_log(row),
-        "ip_address": get_ipv4s_from_log(row),
-        "message_type": get_message_type(row),
+        "ip_v4": get_ipv4s_from_log(row),
+        "type": get_message_type(row),
         "message": get_message(row)
     }
     print(row_dict)
+
+
+getDict(
+    "Dec 10 07:02:47 LabSZ sshd[24203]: Connection closed by 212.47.254.145 [preauth]")
