@@ -12,7 +12,7 @@ dotenv.load_dotenv()
 # if os.getenv("BACKUPS_DIR") is None:
 # os.environ["BACKUPS_DIR"] = "./.backups"
 
-json_path = f"{os.getenv('BACKUPS_DIR')}/backups_history.json"
+json_path = os.path.abspath(f"{os.getenv('BACKUPS_DIR')}/backups_history.json")
 curr_timestamp = datetime.now()
 
 
