@@ -1,23 +1,7 @@
 import re
 from datetime import datetime
-
-# nie zwraca listy tylko po prostu adres bo w tych logach nie ma takich wierszy z dwoma lub więcej adresami
-
-
-def get_ipv4s_from_log(row):
-    ip_regex = r'(?:\d{1,3}\.){3}\d{1,3}'
-    match = re.findall(ip_regex, row)
-    if match:
-        return match
-    return None
-
-
-def get_user_from_log(row):
-    user_regex = r'user (\w+)'
-    match = re.search(user_regex, row)
-    if match:
-        return match.group(1)
-    return None
+from fun_2_b import get_ipv4s_from_log
+from fun_2_c import get_user_from_log
 
 
 def get_message_type(row):

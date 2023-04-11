@@ -11,7 +11,8 @@ def main(argv: Optional[Sequence[str]] = None):
     parser = argparse.ArgumentParser(description="L5 arg parser")
 
     # positional arguments:
-    parser.add_argument("logfile_path", help="states a path to the file with SSH logs")
+    parser.add_argument(
+        "logfile_path", help="states a path to the file with SSH logs")
 
     # options:
     parser.add_argument("-m", "--minlevel", help="states the minimal level of logging (default: %(default)s)",
