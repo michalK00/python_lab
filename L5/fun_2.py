@@ -31,8 +31,16 @@ def get_message_type(row):
         return ms.OTHER
 
 
+def get_sshd(row):
+    sshd_regex = r'sshd\[(\d+)\]'
+    match = re.search(sshd_regex, row)
+    if match:
+        sshd = match.group(1)
+    return sshd
+
+
 def get_date(row):
-    date_regex = r'([A-z]{3}) (0?[1-9]|[12][0-9]|3[01]) (?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)'
+    date_regex = r'([A-z]{3})\s+(0?[1-9]|[12][0-9]|3[01]) (?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)'
     match = re.search(date_regex, row)
     if match:
 
@@ -61,7 +69,8 @@ def get_row_dict(row):
         "user": get_user_from_log(row),
         "ip_v4": get_ipv4s_from_log(row),
         "type": get_message_type(row),
-        "message": get_message(row)
+        "message": get_message(row),
+        "sshd": get_sshd(row)
     }
     return row_dict
 
