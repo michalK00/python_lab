@@ -1,31 +1,34 @@
 import re
 from datetime import datetime
+from fun_1 import read_logs
 from fun_2_b import get_ipv4s_from_log
 from fun_2_c import get_user_from_log
+from type_enum import TypeOfMessage as ms
 
 
 def get_message_type(row):
     # tutaj nie wiem bo nie ma żadnych logów z pomyślnym logowaniem
-    successful_login = "Login successful"
-    failed_login = "Received disconnect"
-    connection_closed = "Connection closed"
+    successful_login = "session opened"
+    failed_login = "authentication failure"
+    connection_closed = "session closed"
     wrong_password = "Failed password"
-    wrong_login = "Invalid user"
+    wrong_user = "Invalid user"
     break_in_attempt = "POSSIBLE BREAK-IN ATTEMPT!"
+
     if re.search(successful_login, row):
-        return "SUCCESSFUL_LOGIN"
+        return ms.LOGIN_SUCCESSFUL
     elif re.search(failed_login, row):
-        return "FAILED_LOGIN"
+        return ms.LOGIN_FAILURE
     elif re.search(connection_closed, row):
-        return "CONNECTION_CLOSED"
+        return ms.CONNECTION_CLOSED
     elif re.search(wrong_password, row):
-        return "WRONG_PASSWORD"
-    elif re.search(wrong_login, row):
-        return "WRONG_LOGIN"
+        return ms.WRONG_PASSWORD
+    elif re.search(wrong_user, row):
+        return ms.WRONG_USER
     elif re.search(break_in_attempt, row):
-        return "BREAK_IN_ATTEMPT"
+        return ms.BREAK_IN_ATTEMPT
     else:
-        return "OTHER"
+        return ms.OTHER
 
 
 def get_date(row):
@@ -52,7 +55,7 @@ def get_message(row):
     return re.search(capture_message, row).group(1)
 
 
-def getDict(row):
+def get_row_dict(row):
     row_dict = {
         "date": get_date(row),
         "user": get_user_from_log(row),
@@ -60,8 +63,8 @@ def getDict(row):
         "type": get_message_type(row),
         "message": get_message(row)
     }
-    print(row_dict)
+    return row_dict
 
 
-getDict(
-    "Dec 10 07:02:47 LabSZ sshd[24203]: Connection closed by 212.47.254.145 [preauth]")
+def to_list_of_dicts(path):
+    return [get_row_dict(row[count]) for count, row in enumerate(read_logs(path))]
