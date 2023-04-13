@@ -1,6 +1,4 @@
 import random
-import datetime
-import statistics
 from fun_2 import to_list_of_dicts
 
 

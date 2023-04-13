@@ -1,4 +1,3 @@
-
 from fun_2 import to_list_of_dicts
 from type_enum import TypeOfMessage as ms
 from collections import namedtuple
