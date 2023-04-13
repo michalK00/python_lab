@@ -1,7 +1,7 @@
 import logging
 import sys
 
-from type_enum import TypeOfMessage
+from type_enum import TypeOfMessage as msg
 
 # {line, type, date, source, message}
 formatter = logging.Formatter("%(levelname)s: %(message)s")
@@ -35,18 +35,18 @@ def read_bytes_of_log(log):
 def check_message_type(log):
     read_bytes_of_log(log)
     match log.get("type"):
-        case TypeOfMessage.LOGIN_OR_DISCONNECT_SUCCESS:
+        case msg.LOGIN_SUCCESSFUL | msg.CONNECTION_CLOSED:
             logger.info(log.get("message"))
-        case TypeOfMessage.LOGIN_FAILURE:
+        case msg.LOGIN_FAILURE:
             logger.warning(log.get("message"))
-        case TypeOfMessage.ERROR:
+        case msg.WRONG_USER | msg.WRONG_PASSWORD:
             logger.error(log.get("message"))
-        case TypeOfMessage.HACK_ATTEMPT:
+        case msg.BREAK_IN_ATTEMPT:
             logger.critical(log.get("message"))
 
 
 if __name__ == "__main__":
-    log_4_testing = {"line": 1, "type": TypeOfMessage.LOGIN_OR_DISCONNECT_SUCCESS, "date": "Dec 10 06:55:46",
+    log_4_testing = {"line": 1, "type": msg.BREAK_IN_ATTEMPT, "date": "Dec 10 06:55:46",
                      "source": " LabSZ sshd[24200]",
                      "message": "Invalid user webmaster from 173.234.31.186"}
 

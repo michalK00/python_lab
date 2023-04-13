@@ -55,4 +55,7 @@ def calculate_locally(path):
     # TODO finish calculating average and standard deviation
 
 
-calculate_locally('./SSH.log')
+# don't do tests without this, it runs all the programs that just have a call without that if
+# (debugging that ain't fun)
+if __name__ == "__main__":
+    calculate_locally('./SSH.log')
