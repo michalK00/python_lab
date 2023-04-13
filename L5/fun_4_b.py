@@ -57,3 +57,9 @@ def calculate_locally(path):
             stats[user] = {"mean": round(stat.mean(users[user]), 2), "stdev": round(stat.stdev(
                 (users[user])), 2) if len(users[user]) > 1 else 0}
     return stats
+
+
+# don't do tests without this, it runs all the programs that just have a call without that if
+# (debugging that ain't fun)
+if __name__ == "__main__":
+    calculate_locally('./SSH.log')

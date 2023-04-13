@@ -16,7 +16,7 @@ def get_users_logins(path):
 
 def users_who_logged_in_least_and_most_frequently(path):
     user_logins = get_users_logins(path)
-    print(user_logins)
+    # print(user_logins)
     max_user = max(user_logins, key=user_logins.get)
     min_user = min(user_logins, key=user_logins.get)
     Users = namedtuple("Users", ['least_logged_in', 'most_logged_in'])
