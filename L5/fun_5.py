@@ -24,8 +24,7 @@ def main(argv: Optional[Sequence[str]] = None):
     parser = argparse.ArgumentParser(description="L5 args parser")
 
     # positional arguments:
-    parser.add_argument(
-        "logfile_path", help="states a path to the file with SSH logs")
+    parser.add_argument("logfile_path", help="states a path to the file with SSH logs")
 
     # options:
     parser.add_argument("-m", "--minlevel", help="states the minimal level of logging (default: %(default)s)",
@@ -39,17 +38,22 @@ def main(argv: Optional[Sequence[str]] = None):
     subparser_additional_functions.add_parser("fun_2_b", help="calls fun_2_b")
     subparser_additional_functions.add_parser("fun_2_c", help="calls fun_2_c")
     subparser_additional_functions.add_parser("fun_2_d", help="calls fun_2_d")
-    subparser_additional_functions.add_parser("fun_4_a", help="calls fun_4_a")
+    subparser_additional_functions.add_parser("fun_4_a", help="calls fun_4_a") \
+        .add_argument("N",
+                      help="amount of rows, must be a positive integer (default: %(default)s)",
+                      default=1, type=int)
     subparser_additional_functions.add_parser("fun_4_b", help="calls fun_4_b")
     subparser_additional_functions.add_parser("fun_4_c", help="calls fun_4_c")
-    # subparser_additional_functions.add_parser("fun_4_d", help="calls fun_4_d")
 
     args = parser.parse_args(argv)
-
     fun_3.change_min_logging_level(args.minlevel)
 
     if not os.path.isfile(parsed_path := os.path.abspath(args.logfile_path)):
         raise ValueError(f"{parsed_path} does not exist!")
+
+    # always printing (not specified, could be added as last case to print if no other option is chosen)
+    for line in fun_1.read_logs(parsed_path):
+        fun_3.check_message_type(fun_2.get_row_dict(list(line.values())[0]))
 
     call = partial(call_and_print_in_loop, parsed_path=parsed_path)
 
@@ -61,16 +65,17 @@ def main(argv: Optional[Sequence[str]] = None):
         case "fun_2_d":
             call(fun_2.get_message_type)
         case "fun_4_a":
-            print(fun_4_a.get_n_random_rows_from_random_user(5, parsed_path))  # TODO: line amount reading
+            if (amount_of_rows := int(args.N)) < 0:
+                raise ValueError(f"{amount_of_rows} is not a positive integer!")
+
+            print(fun_4_a.get_n_random_rows_from_random_user(amount_of_rows, parsed_path))
         case "fun_4_b":
             print(fun_4_b.calculate_globally(parsed_path))
             print(fun_4_b.calculate_locally(parsed_path))
         case "fun_4_c":
             print(fun_4_c.users_who_logged_in_least_and_most_frequently(parsed_path))
         case _:
-            # doing it only if no other function is to be called
-            for line in fun_1.read_logs(parsed_path):
-                fun_3.check_message_type(fun_2.get_row_dict(list(line.values())[0]))
+            pass
 
 
 if __name__ == "__main__":
