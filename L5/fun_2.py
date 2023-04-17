@@ -7,7 +7,6 @@ from type_enum import TypeOfMessage as ms
 
 
 def get_message_type(row):
-    # tutaj nie wiem bo nie ma żadnych logów z pomyślnym logowaniem
     successful_login = "session opened"
     failed_login = "authentication failure"
     connection_closed = "session closed"
