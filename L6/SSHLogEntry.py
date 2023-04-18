@@ -53,7 +53,7 @@ def get_ipv4s_from_log(row):
     ip_regex = r'(?:\d{1,3}\.){3}\d{1,3}'
     match = re.findall(ip_regex, row)
     if match:
-        return ipaddress.IPv4Address(match)
+        return ipaddress.IPv4Address(match[0])
     return None
 
 
@@ -68,9 +68,9 @@ class SSHLogEntry(metaclass=ABCMeta):
         self._raw_log = log
 
     def __str__(self):
-        return f"""PID: {self.pid} date: {str(self.date)}
-            {f" user: {str(self.user)}" if self.user is not None else " "}
-             ip_v4:  {str(self.ip_v4)} message_type: {str(self.message_type)}"""
+        return ("PID: " + self.pid + " date: " + str(self.date) +
+                (f" user: {str(self.user)}" if self.user is not None else "") +
+                " ip_v4: " + str(self.ip_v4) + " message_type: " + str(self.message_type))
 
     @abstractmethod
     def validate(self):
@@ -88,12 +88,14 @@ class SSHLogEntry(metaclass=ABCMeta):
 
     # type hinting to access the _raw_log
     def __lt__(self, other: "SSHLogEntry"):
-        return (self.pid < other.pid
-                or self.date < other.date
-                or self._raw_log < other._raw_log)
+        return not (self.pid >= other.pid
+                    and self.date >= other.date
+                    and self._raw_log >= other._raw_log)
 
-    def __gt__(self, other):
-        return not self.__lt__(other)
+    def __gt__(self, other: "SSHLogEntry"):
+        return not (self.pid <= other.pid
+                    and self.date <= other.date
+                    and self._raw_log <= other._raw_log)
 
     def __eq__(self, other):
         return not (self.__lt__(other) or self.__gt__(other))

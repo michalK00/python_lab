@@ -21,7 +21,7 @@ def read_logs_v2(file_path):
 
 if __name__ == "__main__":
     # look at the difference
-    path_to_file = "./TEST.log"
+    path_to_file = "../L6/TEST.log"
 
     for i in read_logs(path_to_file):
         print(list(i.values())[0])
