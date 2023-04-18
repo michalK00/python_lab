@@ -12,4 +12,4 @@ class SSHUser:
         # [a-z0-9_-]{0,31} - up to 31 chars that are letters, numbers or _
         # $ - asserts position at the end. makes sure that there aren't any incorrect chars after the correct ones
         user_name_regex = r"^[a-z_][a-z0-9_-]{0,31}$"
-        return re.search(user_name_regex, self.user_name)
+        return bool(re.search(user_name_regex, self.user_name))

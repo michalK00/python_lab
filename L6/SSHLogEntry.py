@@ -58,7 +58,6 @@ def get_ipv4s_from_log(row):
 
 
 class SSHLogEntry(metaclass=ABCMeta):
-
     def __init__(self, log, message_type):
         self.date = get_date(log)
         self.user = get_user_from_log(log)
@@ -88,14 +87,23 @@ class SSHLogEntry(metaclass=ABCMeta):
 
     # type hinting to access the _raw_log
     def __lt__(self, other: "SSHLogEntry"):
-        return not (self.pid >= other.pid
-                    and self.date >= other.date
-                    and self._raw_log >= other._raw_log)
+        # if self.pid < other.pid:
+        #     return True
+        # if self.pid > other.pid:
+        #     return False
+        # if self.date < other.date:
+        #     return True
+        # if self.date > other.date:
+        #     return False
+        # if self._raw_log < other._raw_log:
+        #     return True
+        # return False
+        # Tuple comparison, does the same as this code (comparing element by element), but is much more concise
+
+        return (self.pid, self.date, self._raw_log) < (other.pid, other.date, other._raw_log)
 
     def __gt__(self, other: "SSHLogEntry"):
-        return not (self.pid <= other.pid
-                    and self.date <= other.date
-                    and self._raw_log <= other._raw_log)
+        return (self.pid, self.date, self._raw_log) > (other.pid, other.date, other._raw_log)
 
     def __eq__(self, other):
         return not (self.__lt__(other) or self.__gt__(other))
