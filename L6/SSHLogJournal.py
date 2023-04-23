@@ -6,6 +6,7 @@ import SSHLogEntry as ssh
 import type_enum as msg
 from SSHLogFactory import *
 import SSHLogEntry
+from datetime import datetime
 
 
 class SSHLogJournal:
@@ -47,3 +48,24 @@ class SSHLogJournal:
             return [entry for entry in self.entries if entry.user == None]
         else:
             return [entry for entry in self.entries if entry.user == username]
+
+    def __getattr__(self, name):
+        if name.startswith("ip_"):
+            ip = name[3:]
+            return [entry for entry in self.entries if entry.ip_v4 == ip]
+        elif name.startswith("pid_"):
+            pid = int(name[6:])
+            return [entry for entry in self.entries if entry.pid == pid]
+        elif name.startswith("date_"):
+            date_str = name[5:]
+            date = datetime.strptime(date_str, "%Y-%m-%d")
+            return [entry for entry in self.entries if entry.date == date]
+        else:
+            raise AttributeError(
+                f"'{type(self).__name__}' object has no attribute '{name}'")
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [self.entries[i] for i in range(*index.indices(len(self)))]
+        else:
+            return self.entries[index]
