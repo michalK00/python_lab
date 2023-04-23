@@ -79,8 +79,9 @@ class SSHLogEntry(metaclass=ABCMeta):
                 and self.message_type == get_message_type(self._raw_log)
                 and self.pid == get_pid(self._raw_log))
 
-    def get_ipv4(self):
-        return self.ip_v4
+    @property
+    def has_ip(self):
+        return self.ip_v4 is not None
 
     def __repr__(self):
         return f"{self.__class__}, {self.__dict__}"
