@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from type_enum import TypeOfMessage as Msg
+from L6.type_enum import TypeOfMessage as Msg
 import ipaddress
 from abc import ABCMeta, abstractmethod
 
@@ -78,6 +78,9 @@ class SSHLogEntry(metaclass=ABCMeta):
                 and self.ip_v4 == get_ipv4s_from_log(self._raw_log)
                 and self.message_type == get_message_type(self._raw_log)
                 and self.pid == get_pid(self._raw_log))
+
+    def get_ip(self):
+        return self.ip_v4
 
     @property
     def has_ip(self):

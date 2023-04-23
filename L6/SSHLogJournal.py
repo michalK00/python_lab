@@ -1,5 +1,5 @@
-import SSHLogPasswordDenied
-import SSHLogFactory
+from L6.ssh_log_entries import SSHLogPasswordDenied
+from SSHLogFactory import SSHLogFactory
 from datetime import datetime
 import ipaddress
 import re
@@ -19,7 +19,7 @@ class SSHLogJournal:
         return item in self.entries
 
     def append(self, log_entry: str):
-        ssh_log = SSHLogFactory.SSHLogFactory.get_log_entry(log_entry)
+        ssh_log = SSHLogFactory.get_log_entry(log_entry)
 
         if ssh_log.validate():
             self.entries.append(ssh_log)
