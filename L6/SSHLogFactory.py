@@ -4,7 +4,7 @@ from ssh_log_entries.SSHLogPasswordDenied import SSHLogPasswordDenied
 from ssh_log_entries.SSHLogError import SSHLogError
 from ssh_log_entries.SSHLogOther import SSHLogOther
 from ssh_log_entries import SSHLogEntry
-from type_enum import TypeOfMessage as Msg
+from L6.type_enum import TypeOfMessage as Msg
 
 
 # pre declaration

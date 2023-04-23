@@ -1,4 +1,5 @@
 from ssh_log_entries import SSHLogPasswordDenied
+from ssh_log_entries import SSHLogPasswordDenied
 from SSHLogFactory import SSHLogFactory
 from datetime import datetime
 import ipaddress
