@@ -1,33 +1,37 @@
 from abc import ABCMeta, abstractmethod
-import SSHLogError
-import SSHLogOther
-import SSHLogPasswordAccepted
-import SSHLogPasswordDenied
+import SSHLogError as error
+import SSHLogOther as other
+import SSHLogPasswordAccepted as accepted
+import SSHLogPasswordDenied as denied
 import SSHLogEntry
 
 
 class SSHLogFactory:
 
     @abstractmethod
-    def create_ssh_entry_obj(self, log):
+    def create_ssh_entry_obj(log):
         pass
 
 
 class SSHErrorLogFactory(SSHLogFactory):
-    def create_ssh_entry_obj(self, log) -> SSHLogEntry:
-        return SSHLogError(log)
+    @staticmethod
+    def create_ssh_entry_obj(log) -> SSHLogEntry:
+        return error.SSHLogError(log)
 
 
 class SSHPasswordAcceptedLogFactory(SSHLogFactory):
-    def create_ssh_entry_obj(self, log) -> SSHLogEntry:
-        return SSHLogPasswordAccepted(log)
+    @staticmethod
+    def create_ssh_entry_obj(log) -> SSHLogEntry:
+        return accepted.SSHLogPasswordAccepted(log)
 
 
 class SSHPasswordDeniedLogFactory(SSHLogFactory):
-    def create_ssh_entry_obj(self, log) -> SSHLogEntry:
-        return SSHLogPasswordDenied(log)
+    @staticmethod
+    def create_ssh_entry_obj(log) -> SSHLogEntry:
+        return denied.SSHLogPasswordDenied(log)
 
 
 class SSHOtherLogFactory(SSHLogFactory):
-    def create_ssh_entry_obj(self, log) -> SSHLogEntry:
-        return SSHLogOther(log)
+    @staticmethod
+    def create_ssh_entry_obj(log) -> SSHLogEntry:
+        return other.SSHLogOther(log)
