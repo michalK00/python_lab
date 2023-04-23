@@ -11,12 +11,11 @@ class SSHLogPasswordDenied(SSHLogEntry):
 
 
 if __name__ == "__main__":
-    message0 = """Dec 20 06:55:48 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message1 = """Dec 10 06:55:48 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    someObj0 = SSHLogPasswordDenied(message0)
-    someObj1 = SSHLogPasswordDenied(message1)
-    print(someObj0.date)
-    print(someObj1.date)
-    print(someObj0 == someObj1)
+    message0 = "Dec 20 06:55:48 LabSZ sshd[24100]: " \
+               "Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"
+    ssh_obj0 = SSHLogPasswordDenied(message0)
+    ssh_obj1 = SSHLogPasswordDenied(message0)
+
+    print(f"Should be equal: {ssh_obj0 == ssh_obj1}")
+
+    message1 = "Dec 10 06:55:48 LabSZ sshd[24100]: Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"

@@ -1,7 +1,10 @@
 from abc import ABCMeta, abstractmethod
-from L6.ssh_log_entries import SSHLogEntry, SSHLogOther as Other, SSHLogPasswordDenied as Denied, \
-    SSHLogPasswordAccepted as Accepted, SSHLogError as Error
-from type_enum import TypeOfMessage as Msg
+from L6.ssh_log_entries.SSHLogPasswordAccepted import SSHLogPasswordAccepted
+from L6.ssh_log_entries.SSHLogPasswordDenied import SSHLogPasswordDenied
+from L6.ssh_log_entries.SSHLogError import SSHLogError
+from L6.ssh_log_entries.SSHLogOther import SSHLogOther
+from L6.ssh_log_entries import SSHLogEntry
+from L6.type_enum import TypeOfMessage as Msg
 
 
 # pre declaration
@@ -12,25 +15,25 @@ class SSHLogFactory(metaclass=ABCMeta):
 class SSHErrorLogFactory(SSHLogFactory):
     @staticmethod
     def create_ssh_entry_obj(log):
-        return Error.SSHLogError(log)
+        return SSHLogError(log)
 
 
 class SSHPasswordAcceptedLogFactory(SSHLogFactory):
     @staticmethod
     def create_ssh_entry_obj(log):
-        return Accepted.SSHLogPasswordAccepted(log)
+        return SSHLogPasswordAccepted(log)
 
 
 class SSHPasswordDeniedLogFactory(SSHLogFactory):
     @staticmethod
     def create_ssh_entry_obj(log):
-        return Denied.SSHLogPasswordDenied(log)
+        return SSHLogPasswordDenied(log)
 
 
 class SSHOtherLogFactory(SSHLogFactory):
     @staticmethod
     def create_ssh_entry_obj(log):
-        return Other.SSHLogOther(log)
+        return SSHLogOther(log)
 
 
 class SSHLogFactory(metaclass=ABCMeta):
