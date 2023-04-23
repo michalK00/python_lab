@@ -1,9 +1,8 @@
 import SSHLogPasswordDenied
-import SSHLogEntry as ssh
-import type_enum as msg
-from SSHLogFactory import *
-import SSHLogEntry
+import SSHLogFactory
 from datetime import datetime
+import ipaddress
+import re
 
 
 class SSHLogJournal:
@@ -19,21 +18,8 @@ class SSHLogJournal:
     def __contains__(self, item):
         return item in self.entries
 
-    def _parse_to_log(self, log: str) -> SSHLogEntry:
-        message_type = ssh.get_message_type(log)
-        match message_type:
-            case msg.TypeOfMessage.ERROR:
-                return SSHErrorLogFactory.create_ssh_entry_obj(log)
-            case msg.TypeOfMessage.OTHER:
-                return SSHOtherLogFactory.create_ssh_entry_obj(log)
-            case msg.TypeOfMessage.PASSWORD_ACCEPTED:
-                return SSHPasswordAcceptedLogFactory.create_ssh_entry_obj(
-                    log)
-            case msg.TypeOfMessage.PASSWORD_DENIED:
-                return SSHPasswordDeniedLogFactory.create_ssh_entry_obj(log)
-
-    def append(self, log: str):
-        ssh_log = self._parse_to_log(log)
+    def append(self, log_entry: str):
+        ssh_log = SSHLogFactory.SSHLogFactory.get_log_entry(log_entry)
 
         if ssh_log.validate():
             self.entries.append(ssh_log)
@@ -41,26 +27,34 @@ class SSHLogJournal:
         return False
 
     def filter_by_user(self, username=None):
-        if username is None:
-            return [entry for entry in self.entries if entry.user == None]
-        else:
-            return [entry for entry in self.entries if entry.user == username]
+        return [some_entry for some_entry in self.entries if some_entry.user == username]
 
-    # doesn't work
-    # def __getattr__(self, name):
-    #     if name.startswith("ip_"):
-    #         ip = name[3:]
-    #         return [entry for entry in self.entries if entry.ip_v4 == ip]
-    #     elif name.startswith("pid_"):
-    #         pid = int(name[6:])
-    #         return [entry for entry in self.entries if entry.pid == pid]
-    #     elif name.startswith("date_"):
-    #         date_str = name[5:]
-    #         date = datetime.strptime(date_str, "%Y-%m-%d")
-    #         return [entry for entry in self.entries if entry.date == date]
-    #     else:
-    #         raise AttributeError(
-    #             f"'{type(self).__name__}' object has no attribute '{name}'")
+    def __getattr__(self, name):
+        if name.startswith("ip_"):
+            # splits on non digits and then glue together with "." as separator, then turn to ip
+            ip = ipaddress.IPv4Address(".".join(re.split(r"\D+", name[3:])))
+            return [some_entry for some_entry in self.entries if some_entry.ip_v4 == ip]
+
+        elif name.startswith("pid_"):
+            pid = int(name[4:])
+            return [some_entry for some_entry in self.entries if pid == some_entry.pid]
+
+        elif name.startswith("date_"):
+            # we only give the month and the day SO there will be more results :D
+            day_and_month_regex = r"([A-Za-z]{3})(\D+)(\d+)"
+            match = re.search(day_and_month_regex, name[5:])
+            if not match:
+                return
+
+            month = match.group(1)
+            day = match.group(3)
+            date_obj = datetime.strptime(f"{day} {month} {datetime.now().year}", "%d %b %Y")
+            return [some_entry for some_entry in self.entries if
+                    (some_entry.date.month, some_entry.date.day) == (date_obj.month, date_obj.day)]
+
+        else:
+            raise AttributeError(
+                f"'{type(self).__name__}' incorrect attribute '{name}'")
 
     def __getitem__(self, index):
         if isinstance(index, slice):
@@ -81,8 +75,11 @@ if __name__ == "__main__":
     journal.append(message0)
     journal.append(message1)
     journal.append(message2)
-    print(journal[0])
-    print(log in journal)
-    print(len(journal))
-    print(iter(journal))
-    print(journal[0:1:1])
+    # print(journal[0])
+    # print(log in journal)
+    # print(len(journal))
+    # print(iter(journal))
+    # print(journal[0:1:1])
+
+    for entry in journal:
+        print(entry)

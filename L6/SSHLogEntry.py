@@ -39,7 +39,7 @@ def get_pid(row):
     pid_regex = r'sshd\[(\d+)\]'
     match = re.search(pid_regex, row)
     if match:
-        return match.group(1)
+        return int(match.group(1))
 
 
 def get_user_from_log(row):
@@ -67,7 +67,7 @@ class SSHLogEntry(metaclass=ABCMeta):
         self._raw_log = log
 
     def __str__(self):
-        return ("PID: " + self.pid + " date: " + str(self.date) +
+        return ("PID: " + str(self.pid) + " date: " + str(self.date) +
                 (f" user: {str(self.user)}" if self.user is not None else "") +
                 " ip_v4: " + str(self.ip_v4) + " message_type: " + str(self.message_type))
 
