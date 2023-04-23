@@ -20,12 +20,17 @@ class SSHLogEntry(metaclass=abc.ABCMeta):
             (" user: " + self.user if self.user is not None else "") + \
             " ip_v4: " + self.ip_v4 + " message_type: " + self.message_type
 
+    def _ip_exists(self):
+        return self.ip_v4 is not None
+
     @abc.abstractmethod
     def validate(self):
         pass
 
     def get_ipv4(self):
         return self.ip_v4
+
+    has_ip = property(fget=_ip_exists)
 
     def get_message_type(row):
         pass_acc = "Accepted password"
