@@ -1,4 +1,4 @@
-from L6.ssh_log_entries import SSHLogPasswordDenied
+from ssh_log_entries import SSHLogPasswordDenied
 from SSHLogFactory import SSHLogFactory
 from datetime import datetime
 import ipaddress
@@ -65,21 +65,28 @@ class SSHLogJournal:
 
 
 if __name__ == "__main__":
-    message0 = """Dec 20 06:55:33 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message1 = """Dec 10 06:55:48 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message2 = """Dec 31 23:56:28 LabSZ sshd[3101]: Invalid user vyatta from 202.107.207.123"""
+    message0 = "Dec 20 06:55:33 LabSZ sshd[24100]: " \
+               "Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"
+    message1 = "Dec 10 06:55:48 LabSZ sshd[24100]: " \
+               "Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"
+    message2 = "Dec 31 23:56:28 LabSZ sshd[3101]: " \
+               "Invalid user vyatta from 202.107.207.123"
     log = SSHLogPasswordDenied.SSHLogPasswordDenied(message0)
     journal = SSHLogJournal()
     journal.append(message0)
     journal.append(message1)
     journal.append(message2)
-    # print(journal[0])
-    # print(log in journal)
-    # print(len(journal))
-    # print(iter(journal))
-    # print(journal[0:1:1])
+    print(f"First element: {journal[0]}")
+    print(f"Should contain log (be true): {log in journal}")
+    print(f"Should be of length 3, actual length: {len(journal)}")
+    print(f"Iterator: {iter(journal)}")
 
-    for entry in journal:
+    print("\nFind by PID (a list of 2 elems, PID = 24100): [")
+    for entry in journal.pid_24100:
         print(entry)
+    print("]")
+
+    print("\njournal[::2] (should print two): [")
+    for entry in journal[::2]:
+        print(entry)
+    print("]")
