@@ -1,5 +1,5 @@
-from L6.ssh_log_entries.SSHLogEntry import SSHLogEntry
-from L6.type_enum import TypeOfMessage as Msg
+from ssh_log_entries.SSHLogEntry import SSHLogEntry
+from type_enum import TypeOfMessage as Msg
 
 
 class SSHLogError(SSHLogEntry):

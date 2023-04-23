@@ -1,8 +1,10 @@
-from L6.ssh_log_entries import SSHLogPasswordDenied
+from ssh_log_entries import SSHLogPasswordDenied
 from SSHLogFactory import SSHLogFactory
 from datetime import datetime
 import ipaddress
 import re
+import sys
+import utils
 
 
 class SSHLogJournal:
@@ -48,7 +50,8 @@ class SSHLogJournal:
 
             month = match.group(1)
             day = match.group(3)
-            date_obj = datetime.strptime(f"{day} {month} {datetime.now().year}", "%d %b %Y")
+            date_obj = datetime.strptime(
+                f"{day} {month} {datetime.now().year}", "%d %b %Y")
             return [some_entry for some_entry in self.entries if
                     (some_entry.date.month, some_entry.date.day) == (date_obj.month, date_obj.day)]
 
@@ -65,21 +68,26 @@ class SSHLogJournal:
 
 
 if __name__ == "__main__":
-    message0 = """Dec 20 06:55:33 LabSZ sshd[24100]: 
+    message0 = """Dec 28 06:55:33 LabSZ sshd[24100]: 
         Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message1 = """Dec 10 06:55:48 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message2 = """Dec 31 23:56:28 LabSZ sshd[3101]: Invalid user vyatta from 202.107.207.123"""
-    log = SSHLogPasswordDenied.SSHLogPasswordDenied(message0)
+    test_log = SSHLogPasswordDenied.SSHLogPasswordDenied(message0)
     journal = SSHLogJournal()
-    journal.append(message0)
-    journal.append(message1)
-    journal.append(message2)
-    # print(journal[0])
-    # print(log in journal)
-    # print(len(journal))
-    # print(iter(journal))
-    # print(journal[0:1:1])
 
-    for entry in journal:
-        print(entry)
+    # load logs into journal
+
+    for log in utils.read_logs(sys.argv[1]):
+        journal.append(log)
+
+    print(f"Before adding: {test_log in journal}")
+    journal.append(message0)
+    print(f"After adding: {test_log in journal}")
+    print(f"First log: {journal[0]}")
+
+    print(f"Iter: {iter(journal)}")
+    print(f"Print every third of 12 logs {journal[0:12:3]}")
+
+    print(journal.filter_by_user("xxchen"))
+
+    print(f"Logs with ip_173_234_31_186: {journal.ip_173_234_31_186}")
+    print(f"Logs with pid_24100: {journal.pid_24100}")
+    print(f"Logs with date_Dec_28: {journal.date_Dec_28}")

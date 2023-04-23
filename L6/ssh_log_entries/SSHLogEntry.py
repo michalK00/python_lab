@@ -1,6 +1,6 @@
 import re
 from datetime import datetime
-from L6.type_enum import TypeOfMessage as Msg
+from type_enum import TypeOfMessage as Msg
 import ipaddress
 from abc import ABCMeta, abstractmethod
 
@@ -53,7 +53,10 @@ def get_ipv4s_from_log(row):
     ip_regex = r'(?:\d{1,3}\.){3}\d{1,3}'
     match = re.findall(ip_regex, row)
     if match:
-        return ipaddress.IPv4Address(match[0])
+        try:
+            return ipaddress.IPv4Address(match[0])
+        except:
+            return None
     return None
 
 
