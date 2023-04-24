@@ -1,4 +1,4 @@
-from ssh_log_entries.SSHLogEntry import SSHLogEntry
+from SSHLogEntry import SSHLogEntry
 from type_enum import TypeOfMessage as Msg
 
 

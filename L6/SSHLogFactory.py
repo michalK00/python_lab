@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
-from ssh_log_entries.SSHLogPasswordAccepted import SSHLogPasswordAccepted
-from ssh_log_entries.SSHLogPasswordDenied import SSHLogPasswordDenied
-from ssh_log_entries.SSHLogError import SSHLogError
-from ssh_log_entries.SSHLogOther import SSHLogOther
-from ssh_log_entries import SSHLogEntry
-from L6.type_enum import TypeOfMessage as Msg
+from SSHLogPasswordAccepted import SSHLogPasswordAccepted
+from SSHLogPasswordDenied import SSHLogPasswordDenied
+from SSHLogError import SSHLogError
+from SSHLogOther import SSHLogOther
+import SSHLogEntry
+from type_enum import TypeOfMessage as Msg
 
 
 # pre declaration
