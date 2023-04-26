@@ -3,9 +3,8 @@ from typing import Callable, Any
 
 # a high level function that takes a function that
 # it itself takes one parameter
-
-
 def make_generator(f: Callable[[Any], Any]):
+    # generator is suboptimal, as it doesn't memoize (e.g. fibonacci_number will have atrocious time complexity)
     def custom_generator():
         i = 1
         while True:
