@@ -1,10 +1,24 @@
+from inspect import signature, isfunction
+
+
+def eval_is_fun_unary(some_func):
+    if not (isfunction(some_func) and len(signature(some_func).parameters) == 1):
+        raise TypeError("Predicate must be a unary function!")
+
+
 def forall(pred, iterable):
+    eval_is_fun_unary(pred)
+
     # cleaner but less readable (in my opinion)
     # return all(pred(elem) for elem in iterable)
     for elem in iterable:
         if not pred(elem):
             return False
     return True
+
+
+def a_fun(a, b):
+    return a+b
 
 
 # I could modify e.g. list class so that I can call [1, 2, 3].forall(lambda x: x>2),

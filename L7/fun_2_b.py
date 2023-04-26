@@ -1,4 +1,8 @@
+from fun_2_a import eval_is_fun_unary
+
+
 def exists(pred, iterable):
+    eval_is_fun_unary(pred)
     # return any(pred(elem) for elem in iterable)
     for elem in iterable:
         if pred(elem):

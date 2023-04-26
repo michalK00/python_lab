@@ -1,4 +1,8 @@
+from fun_2_a import eval_is_fun_unary
+
+
 def atmost(n, pred, iterable):
+    eval_is_fun_unary(pred)
     # return sum(1 for elem in iterable if pred(elem)) <= n
     counter = 0
     for elem in iterable:

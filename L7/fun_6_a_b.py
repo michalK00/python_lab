@@ -21,7 +21,10 @@ log_levels = {
 }
 
 
-def log(level: logging.DEBUG | logging.INFO | logging.WARNING | logging.ERROR | logging.CRITICAL):
+def log(level):
+    if level not in log_levels.keys():
+        raise TypeError(f"Incorrect parameter: {level}")
+
     def decorator(decorated):
         def wrapper(*args, **kwargs):
             time_called = datetime.now()
