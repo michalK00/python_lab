@@ -34,7 +34,7 @@ def iterate_n_times(n, f):
 
 
 if __name__ == "__main__":
-    stop_condition = 20
+    stop_condition = 200
 
     # 4_a
     # fibonacci
