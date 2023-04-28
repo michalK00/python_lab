@@ -1,18 +1,24 @@
-from functools import lru_cache
+from fun_2_a import eval_is_fun_unary
+from functools import cache
 import fun_4_a_b
 
-# TODO
 
-
-def make_generator_mem(f):
-    @lru_cache(maxsize=None)
-    def memoized_f(f):
+def make_generator(f):
+    @cache
+    def memoize_f(f):
         return f
-    return fun_4_a_b.make_generator(memoized_f(f))
+
+    def custom_generator():
+        i = 1
+        while True:
+            yield memoize_f(f(i))
+            i += 1
+
+    return custom_generator
 
 
-def iterate_n_times_mem(n, f):
-    for i, gen in enumerate(make_generator_mem(f)()):
+def iterate_n_times(n, f):
+    for i, gen in enumerate(make_generator(f)()):
         if i > n:
             break
         # print(f"{i}: {gen}")
@@ -24,5 +30,7 @@ if __name__ == "__main__":
     # 4_a
     # fibonacci
     print("Fibonacci sequence:")
-    iterate_n_times_mem(
-        stop_condition, fun_4_a_b.fibonacci_number(stop_condition))
+    iterate_n_times(stop_condition, fun_4_a_b.fibonacci_number)
+    print("1st done")
+    iterate_n_times(stop_condition, fun_4_a_b.fibonacci_number)
+    print("2nd done")
