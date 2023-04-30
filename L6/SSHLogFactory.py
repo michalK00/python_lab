@@ -3,7 +3,7 @@ from SSHLogPasswordAccepted import SSHLogPasswordAccepted
 from SSHLogPasswordDenied import SSHLogPasswordDenied
 from SSHLogError import SSHLogError
 from SSHLogOther import SSHLogOther
-import SSHLogEntry
+from SSHLogEntry import get_message_type
 from type_enum import TypeOfMessage as Msg
 
 
@@ -52,4 +52,5 @@ class SSHLogFactory(metaclass=ABCMeta):
             Msg.OTHER: SSHOtherLogFactory
         }
 
-        return factories_dict[SSHLogEntry.get_message_type(log_entry)].create_ssh_entry_obj(log_entry)
+        return factories_dict[get_message_type(log_entry)]\
+            .create_ssh_entry_obj(log_entry)
