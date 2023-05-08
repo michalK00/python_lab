@@ -62,4 +62,4 @@ def calculate_locally(path):
 # don't do tests without this, it runs all the programs that just have a call without that if
 # (debugging that ain't fun)
 if __name__ == "__main__":
-    calculate_locally('./SSH.log')
+    calculate_locally('../L8/SSH.log')
