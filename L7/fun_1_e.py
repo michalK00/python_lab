@@ -10,8 +10,10 @@ def flatten(to_flatten: List[Any]) -> List[Any]:
                 return inner_flattener(tail, acc + [head])
             case _:
                 return acc
-    return inner_flattener(to_flatten, []) if len(to_flatten) > 0 else []
+
+    return inner_flattener(to_flatten, [])
 
 
 if __name__ == "__main__":
     print(flatten([1, [2, 3], [[4, 5], 6]]))
+    print(flatten([]))
