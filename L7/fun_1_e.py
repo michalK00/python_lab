@@ -1,17 +1,16 @@
-# def flatten(elements):
-#     def flatten_helper(elements, acc):
-#         return flatten_helper(elements[0], acc) + flatten_helper(elements[1:], acc) if isinstance(elements[0], list) or isinstance(elements[0], tuple) else flatten_helper(elements[1:], acc + [elements[0]])
-#     return flatten_helper(elements, list())
+from typing import List, Any
 
-def flatten(elements):
 
-    def flatten_helper(elements, acc):
-        match elements[0]:
-            case list() | tuple():
-                return flatten_helper(elements[0], list()) + flatten_helper(elements[1:], acc) if len(elements) > 1 else acc + flatten_helper(elements[0], list())
-            case other:
-                return flatten_helper(elements[1:], acc + [elements[0]]) if len(elements) > 1 else acc + [elements[0]]
-    return flatten_helper(elements, list()) if len(elements) > 0 else []
+def flatten(to_flatten: List[Any]) -> List[Any]:
+    def inner_flattener(to_flatten_inner: List[Any], acc: List[Any]) -> List[Any]:
+        match to_flatten_inner:
+            case [list(), *tail]:
+                return inner_flattener(tail, acc + inner_flattener(to_flatten_inner[0], []))
+            case [head, *tail]:
+                return inner_flattener(tail, acc + [head])
+            case _:
+                return acc
+    return inner_flattener(to_flatten, []) if len(to_flatten) > 0 else []
 
 
 if __name__ == "__main__":
