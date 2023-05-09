@@ -1,124 +1,78 @@
 import sys
-from PySide6.QtWidgets import (QApplication, QMainWindow, QPushButton, QVBoxLayout, QWidget, QFileDialog, QHBoxLayout,
-                               QLineEdit, QListWidget, QListWidgetItem, QListView, QDateEdit, QLabel, QStackedWidget,
-                               QCalendarWidget, QSizePolicy)
-from PySide6.QtGui import QFont
-from PySide6.QtCore import Qt, QDate
+from functools import partial
+from PySide6.QtWidgets import (QApplication, QPushButton, QVBoxLayout, QWidget,
+                               QListWidget, QListWidgetItem, QListView, QStackedWidget)
 
-from backend import get_logs, gather_logs, get_logs_between_dates
+from data_managment import *
+from MainWindow import MainWindow
+from FileLoadingLayout import FileLoadingLayout
+from FilterByDateLayout import FilterByDateLayout
 
-START_V = 768
 START_H = 1024
-
-app = QApplication(sys.argv)
-window = QMainWindow()
-window.resize(START_H, START_V)
+START_W = 768
 
 
-def open_file_dialog() -> None:
-    dialog = QFileDialog()
-    dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
-    dialog.setNameFilter("Log Files (*.log);;All Files (*)")
-
-    if dialog.exec():
-        file_paths = dialog.selectedFiles()[0]
-        file_label.setText(file_paths)
-        load_log_list(file_paths, all_log_list)
-
-
-def load_log_list(file_path: str, list_widget: QListWidget) -> None:
-    gather_logs(file_path)
-    for log in get_logs():
-        item = QListWidgetItem(log)
-        list_widget.addItem(item)
-    list_widget.itemPressed.connect(handle_log_change)
-
-
-def load_filtered_list() -> None:
-    filtered_log_list.clear()
-    for log in get_logs_between_dates(start_date_filter.date(), end_date_filter.date()):
-        item = QListWidgetItem(log)
-        filtered_log_list.addItem(item)
-
-
-def handle_log_change(item: QListWidgetItem) -> None:
-    print(item.text())
-
-
-def update_end_date(start_date: QDate) -> None:
-    end_date_filter.setMinimumDate(start_date)
-
-
-def update_start_date(end_date: QDate) -> None:
-    start_date_filter.setMaximumDate(end_date)
-
-
-def apply_date_filter() -> None:
-    if date_filter_applying_button.isChecked():
+def apply_date_filter(button: QPushButton) -> None:
+    if button.isChecked():
         load_filtered_list()
         log_list_stacked_widget.setCurrentIndex(1)
     else:
         log_list_stacked_widget.setCurrentIndex(0)
 
 
-font = QFont("Comic Sans MS")
-font.setBold(True)
-window.setFont(font)
+def load_main_log_list(file_path: str) -> None:
+    gather_logs(file_path)
+    for log in get_logs():
+        item = QListWidgetItem(log)
+        main_log_list.addItem(item)
 
-layout = QVBoxLayout()
 
-file_loading_layout = QHBoxLayout()
-layout.addLayout(file_loading_layout)
-date_filter_layout = QHBoxLayout()
-layout.addLayout(date_filter_layout)
+def load_filtered_list() -> None:
+    filtered_log_list.clear()
+    for log in get_logs_between_dates(filter_layout.get_start_date(), filter_layout.get_end_date()):
+        item = QListWidgetItem(log)
+        filtered_log_list.addItem(item)
 
-button = QPushButton("Open")
-file_label = QLineEdit()
-file_label.setReadOnly(True)
+
+def handle_log_change(item: QListWidgetItem, list_widget: QListWidget, item_getter) -> None:
+    print(item_getter(list_widget.indexFromItem(list_widget.selectedItems()[0]).row()))
+    print(item.text())
+
+
+app = QApplication(sys.argv)
+main_layout = QVBoxLayout()
 
 # stacking two lists, so I don't have to reload everything everytime the user wants to view filtered logs
 log_list_stacked_widget = QStackedWidget()
-all_log_list = QListWidget()
-all_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
+main_log_list = QListWidget()
+main_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
+main_log_list.itemPressed.connect(partial(
+    handle_log_change,
+    list_widget=main_log_list,
+    item_getter=get_item_from_log_list))
 
 filtered_log_list = QListWidget()
 filtered_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
+filtered_log_list.itemPressed.connect(partial(
+    handle_log_change,
+    list_widget=filtered_log_list,
+    item_getter=get_item_from_filtered_list))
 
-log_list_stacked_widget.addWidget(all_log_list)
+
+log_list_stacked_widget.addWidget(main_log_list)
 log_list_stacked_widget.addWidget(filtered_log_list)
 
-layout.addWidget(log_list_stacked_widget)
+window = MainWindow(START_H, START_W)
+file_layout = FileLoadingLayout(load_main_log_list)
+filter_layout = FilterByDateLayout(apply_date_filter)
 
-# when implementing master-detail, please move them accordingly, because they look poo-poo
-start_date_filter = QDateEdit()
-start_date_filter.setDate(QDate.currentDate())
-start_date_filter.setDisplayFormat("dd/MM")
-start_date_filter.dateChanged.connect(update_end_date)
-start_date_view = QLabel("From")
-
-end_date_filter = QDateEdit()
-end_date_filter.setDate(QDate.currentDate())
-end_date_filter.setDisplayFormat("dd/MM")
-end_date_filter.dateChanged.connect(update_start_date)
-end_date_view = QLabel("To")
-
-date_filter_applying_button = QPushButton("Apply Date Restrictions")
-date_filter_applying_button.setCheckable(True)
-date_filter_applying_button.toggled.connect(apply_date_filter)
-
-file_loading_layout.addWidget(file_label)
-file_loading_layout.addWidget(button)
-
-date_filter_layout.addWidget(start_date_view)
-date_filter_layout.addWidget(start_date_filter)
-date_filter_layout.addWidget(end_date_view)
-date_filter_layout.addWidget(end_date_filter)
-date_filter_layout.addWidget(date_filter_applying_button)
+main_layout.addLayout(file_layout)
+main_layout.addLayout(filter_layout)
+main_layout.addWidget(log_list_stacked_widget)
 
 widget = QWidget()
-widget.setLayout(layout)
+widget.setLayout(main_layout)
 window.setCentralWidget(widget)
 
-button.clicked.connect(open_file_dialog)
 window.show()
 sys.exit(app.exec())
