@@ -4,7 +4,7 @@ from typing import Callable
 
 
 class FilterByDateLayout(QHBoxLayout):
-    def __init__(self, apply_date_filter: Callable[[QPushButton], None]):
+    def __init__(self):
         super().__init__()
         self._start_date = QDateEdit()
         self._start_date.setDate(QDate.currentDate())
@@ -20,7 +20,6 @@ class FilterByDateLayout(QHBoxLayout):
 
         self._apply_button = QPushButton("Apply Date Restrictions")
         self._apply_button.setCheckable(True)
-        self._apply_button.toggled.connect(lambda _: apply_date_filter(self._apply_button))
 
         self.addWidget(self._start_date_label)
         self.addWidget(self._start_date)
@@ -39,3 +38,7 @@ class FilterByDateLayout(QHBoxLayout):
 
     def get_end_date(self) -> QDate:
         return self._end_date.date()
+
+    def connect_button(self, apply_date_filter):
+        self._apply_button.toggled.connect(lambda _: apply_date_filter(self._apply_button))
+
