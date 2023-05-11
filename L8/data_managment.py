@@ -1,12 +1,13 @@
-from typing import Generator, Tuple
+from typing import Generator, Tuple, List
 from datetime import datetime
 import ipaddress
 
 from SSHLogFactory import SSHLogFactory
+from SSHLogEntry import SSHLogEntry
 from type_enum import TypeOfMessage as Msg
 
-_log_list = []
-_filtered_log_list = []
+_log_list: List[SSHLogEntry] = []
+_filtered_log_list: List[SSHLogEntry] = []
 
 
 # Generator[yield_type, send_type, return type]
@@ -30,12 +31,14 @@ def get_logs_between_dates(start_date: datetime, end_date: datetime) -> Generato
 
 
 def get_item_from_log_list(index: int) -> Tuple[datetime, str, ipaddress, Msg, int]:
-    if 0 <= index < len(_log_list):
-        temp = _log_list[index]
-        return temp.date, temp.user, temp.ip_v4, temp.message_type, temp.pid
+    return _get_item_from_list(index, _log_list)
 
 
 def get_item_from_filtered_list(index: int) -> Tuple[datetime, str, ipaddress, Msg, int]:
-    if 0 <= index < len(_filtered_log_list):
-        temp = _filtered_log_list[index]
+    return _get_item_from_list(index, _filtered_log_list)
+
+
+def _get_item_from_list(index: int, list_of_logs: List[SSHLogEntry]) -> Tuple[datetime, str, ipaddress, Msg, int]:
+    if 0 <= index < len(list_of_logs):
+        temp: SSHLogEntry = list_of_logs[index]
         return temp.date, temp.user, temp.ip_v4, temp.message_type, temp.pid

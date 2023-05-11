@@ -6,7 +6,7 @@ from os import path
 class FileLoadingLayout(QHBoxLayout):
     def __init__(self):
         super().__init__()
-        self._button = QPushButton("Open")
+        self._button: QPushButton = QPushButton("Open")
         self._file_label = QLineEdit()
         self._file_label.setReadOnly(True)
 
@@ -14,7 +14,7 @@ class FileLoadingLayout(QHBoxLayout):
         self.addWidget(self._button)
 
     def open_file_dialog(self) -> str:
-        dialog = QFileDialog()
+        dialog: QFileDialog = QFileDialog()
         dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         dialog.setNameFilter("Log Files (*.log);;All Files (*)")
 
@@ -23,5 +23,5 @@ class FileLoadingLayout(QHBoxLayout):
             return file_path
             # load_log_list(file_path, log_list)
 
-    def connect_button(self, load_log_list: Callable[[str], None]):
+    def connect_button(self, load_log_list: Callable[[str], None]) -> None:
         self._button.clicked.connect(lambda _: load_log_list(self.open_file_dialog()))

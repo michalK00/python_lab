@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QStackedWidget, QListWidget, QListWidgetItem, QListView, QPushButton
 from functools import partial
+from typing import Callable
 
 from FilterByDateLayout import FilterByDateLayout
 from data_managment import *
@@ -8,14 +9,14 @@ from data_managment import *
 class ListWidget(QStackedWidget):
     def __init__(self):
         super().__init__()
-        self.main_log_list = QListWidget()
+        self.main_log_list: QListWidget = QListWidget()
         self.main_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
         self.main_log_list.itemPressed.connect(partial(
             self._handle_log_change,
             list_widget=self.main_log_list,
             item_getter=get_item_from_log_list))
 
-        self.filtered_log_list = QListWidget()
+        self.filtered_log_list: QListWidget = QListWidget()
         self.filtered_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
         self.filtered_log_list.itemPressed.connect(partial(
             self._handle_log_change,
@@ -38,13 +39,13 @@ class ListWidget(QStackedWidget):
 
         gather_logs(file_path)
         for log in get_logs():
-            item = QListWidgetItem(log)
+            item: QListWidgetItem = QListWidgetItem(log)
             self.main_log_list.addItem(item)
 
     def _load_filtered_list(self, filter_layout: FilterByDateLayout) -> None:
         self.filtered_log_list.clear()
         for log in get_logs_between_dates(filter_layout.get_start_date(), filter_layout.get_end_date()):
-            item = QListWidgetItem(log)
+            item: QListWidgetItem = QListWidgetItem(log)
             self.filtered_log_list.addItem(item)
 
     @staticmethod
@@ -52,9 +53,8 @@ class ListWidget(QStackedWidget):
         print(item_getter(list_widget.indexFromItem(list_widget.selectedItems()[0]).row()))
         print(item.text())
 
-    @property
-    def apply_filter_method(self):
-        return self._apply_date_filter
+    def apply_filter_method(self, filter_layout: FilterByDateLayout) -> Callable[[QPushButton], None]:
+        return partial(self._apply_date_filter, filter_layout=filter_layout)
 
     @property
     def load_main_list(self):
