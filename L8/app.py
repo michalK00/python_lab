@@ -7,12 +7,13 @@ from MainWindow import MainWindow
 from FileLoadingLayout import FileLoadingLayout
 from FilterByDateLayout import FilterByDateLayout
 from ListWidget import ListWidget
+from IterationButtonLayout import IterationButtonLayout
 
 START_H: int = 1024
 START_W: int = 768
 
 BACKGROUND_MUSIC_FILEPATH: str = "./sounds/Social CREDITS.mp3"
-BACKGROUND_MUSIC_VOLUME: float = 0.2
+BACKGROUND_MUSIC_VOLUME: float = 0.1
 
 app: QApplication = QApplication(sys.argv)
 main_layout: QVBoxLayout = QVBoxLayout()
@@ -23,12 +24,17 @@ stacked_list: ListWidget = ListWidget()
 file_layout: FileLoadingLayout = FileLoadingLayout()
 file_layout.connect_button(stacked_list.load_main_list)
 
+iteration_button_layout: IterationButtonLayout = IterationButtonLayout()
+iteration_button_layout.connect_stacked_list_widget(stacked_list)
+
 filter_layout: FilterByDateLayout = FilterByDateLayout()
 filter_layout.connect_button(stacked_list.apply_filter_method(filter_layout))
+filter_layout.connect_button(iteration_button_layout.apply_filter_method(filter_layout))
 
 main_layout.addLayout(file_layout)
 main_layout.addLayout(filter_layout)
 main_layout.addWidget(stacked_list)
+main_layout.addWidget(iteration_button_layout)
 
 audio: QAudioOutput = QAudioOutput()
 audio.setVolume(BACKGROUND_MUSIC_VOLUME)

@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QStackedWidget, QListWidget, QListWidgetItem, QListView, QPushButton
 from functools import partial
-from typing import Callable
+from typing import Callable, Any
 
 from FilterByDateLayout import FilterByDateLayout
 from data_managment import *
@@ -9,22 +9,16 @@ from data_managment import *
 class ListWidget(QStackedWidget):
     def __init__(self):
         super().__init__()
-        self.main_log_list: QListWidget = QListWidget()
-        self.main_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        self.main_log_list.itemPressed.connect(partial(
-            self._handle_log_change,
-            list_widget=self.main_log_list,
-            item_getter=get_item_from_log_list))
+        self._main_log_list: QListWidget = QListWidget()
+        self._main_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
+        self._main_log_list.itemPressed.connect(self.handle_main_log_change())
 
-        self.filtered_log_list: QListWidget = QListWidget()
-        self.filtered_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        self.filtered_log_list.itemPressed.connect(partial(
-            self._handle_log_change,
-            list_widget=self.filtered_log_list,
-            item_getter=get_item_from_filtered_list))
+        self._filtered_log_list: QListWidget = QListWidget()
+        self._filtered_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
+        self._filtered_log_list.itemPressed.connect(self.handle_filtered_log_change())
 
-        self.addWidget(self.main_log_list)
-        self.addWidget(self.filtered_log_list)
+        self.addWidget(self._main_log_list)
+        self.addWidget(self._filtered_log_list)
 
     def _apply_date_filter(self, button: QPushButton, filter_layout: FilterByDateLayout) -> None:
         if button.isChecked():
@@ -40,22 +34,41 @@ class ListWidget(QStackedWidget):
         gather_logs(file_path)
         for log in get_logs():
             item: QListWidgetItem = QListWidgetItem(log)
-            self.main_log_list.addItem(item)
+            self._main_log_list.addItem(item)
 
     def _load_filtered_list(self, filter_layout: FilterByDateLayout) -> None:
-        self.filtered_log_list.clear()
+        self._filtered_log_list.clear()
         for log in get_logs_between_dates(filter_layout.get_start_date(), filter_layout.get_end_date()):
             item: QListWidgetItem = QListWidgetItem(log)
-            self.filtered_log_list.addItem(item)
+            self._filtered_log_list.addItem(item)
 
-    @staticmethod
-    def _handle_log_change(item: QListWidgetItem, list_widget: QListWidget, item_getter) -> None:
-        print(item_getter(list_widget.indexFromItem(list_widget.selectedItems()[0]).row()))
-        print(item.text())
+    def _handle_log_change(self, list_widget: QListWidget, item_getter) -> None:
+        print(item_getter(list_widget.currentRow()))
+        # print(item.text())
+
+    def handle_main_log_change(self):
+        return lambda: self._handle_log_change(self._main_log_list, get_item_from_log_list)
+
+    def handle_filtered_log_change(self):
+        return lambda: self._handle_log_change(self._filtered_log_list, get_item_from_filtered_list)
 
     def apply_filter_method(self, filter_layout: FilterByDateLayout) -> Callable[[QPushButton], None]:
         return partial(self._apply_date_filter, filter_layout=filter_layout)
 
+    def inform_main_list_select(self, some_func: Callable[[Any], Any]):
+        self._main_log_list.currentRowChanged.connect(some_func)
+
+    def inform_filtered_list_select(self, some_func: Callable[[Any], Any]):
+        self._filtered_log_list.currentRowChanged.connect(some_func)
+
     @property
-    def load_main_list(self):
+    def load_main_list(self) -> Callable[[str], None]:
         return self._load_main_log_list
+
+    @property
+    def get_main_log_list(self) -> QListWidget:
+        return self._main_log_list
+
+    @property
+    def get_filtered_log_list(self) -> QListWidget:
+        return self._filtered_log_list
