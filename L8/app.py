@@ -1,16 +1,17 @@
 import sys
 from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 from PySide6.QtCore import QUrl
-from PySide6.QtWidgets import QApplication, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QVBoxLayout, QWidget, QHBoxLayout, QSizePolicy
 
 from MainWindow import MainWindow
 from FileLoadingLayout import FileLoadingLayout
 from FilterByDateLayout import FilterByDateLayout
 from ListWidget import ListWidget
 from IterationButtonLayout import IterationButtonLayout
+from DetailsLayout import DetailsLayout
 
-START_H: int = 1024
-START_W: int = 768
+START_H: int = 1012
+START_W: int = 584
 
 BACKGROUND_MUSIC_FILEPATH: str = "./sounds/Social CREDITS.mp3"
 BACKGROUND_MUSIC_VOLUME: float = 0.1
@@ -20,7 +21,8 @@ main_layout: QVBoxLayout = QVBoxLayout()
 
 window: MainWindow = MainWindow(START_H, START_W)
 
-stacked_list: ListWidget = ListWidget()
+details: DetailsLayout = DetailsLayout()
+stacked_list: ListWidget = ListWidget(details)
 file_layout: FileLoadingLayout = FileLoadingLayout()
 file_layout.connect_button(stacked_list.load_main_list)
 
@@ -29,11 +31,17 @@ iteration_button_layout.connect_stacked_list_widget(stacked_list)
 
 filter_layout: FilterByDateLayout = FilterByDateLayout()
 filter_layout.connect_button(stacked_list.apply_filter_method(filter_layout))
-filter_layout.connect_button(iteration_button_layout.apply_filter_method(filter_layout))
+filter_layout.connect_button(
+    iteration_button_layout.apply_filter_method(filter_layout))
 
 main_layout.addLayout(file_layout)
 main_layout.addLayout(filter_layout)
-main_layout.addWidget(stacked_list)
+
+master_detail_layout: QHBoxLayout = QHBoxLayout()
+master_detail_layout.addWidget(stacked_list)
+master_detail_layout.addLayout(details)
+
+main_layout.addLayout(master_detail_layout)
 main_layout.addWidget(iteration_button_layout)
 
 audio: QAudioOutput = QAudioOutput()

@@ -1,21 +1,26 @@
-from PySide6.QtWidgets import QStackedWidget, QListWidget, QListWidgetItem, QListView, QPushButton
+from PySide6.QtWidgets import QStackedWidget, QListWidget, QListWidgetItem, QListView, QPushButton, QVBoxLayout
 from functools import partial
 from typing import Callable, Any
-
+from DetailsLayout import DetailsLayout
 from FilterByDateLayout import FilterByDateLayout
 from data_managment import *
 
 
 class ListWidget(QStackedWidget):
-    def __init__(self):
+    def __init__(self, details: DetailsLayout):
         super().__init__()
+        self.details = details
         self._main_log_list: QListWidget = QListWidget()
-        self._main_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        self._main_log_list.itemPressed.connect(self.handle_main_log_change())
+        self._main_log_list.setSelectionMode(
+            QListView.SelectionMode.SingleSelection)
+        self._main_log_list.itemSelectionChanged.connect(
+            self.handle_main_log_change())
 
         self._filtered_log_list: QListWidget = QListWidget()
-        self._filtered_log_list.setSelectionMode(QListView.SelectionMode.SingleSelection)
-        self._filtered_log_list.itemPressed.connect(self.handle_filtered_log_change())
+        self._filtered_log_list.setSelectionMode(
+            QListView.SelectionMode.SingleSelection)
+        self._filtered_log_list.itemSelectionChanged.connect(
+            self.handle_filtered_log_change())
 
         self.addWidget(self._main_log_list)
         self.addWidget(self._filtered_log_list)
@@ -43,8 +48,7 @@ class ListWidget(QStackedWidget):
             self._filtered_log_list.addItem(item)
 
     def _handle_log_change(self, list_widget: QListWidget, item_getter) -> None:
-        print(item_getter(list_widget.currentRow()))
-        # print(item.text())
+        self.details.update_details(item_getter(list_widget.currentRow()))
 
     def handle_main_log_change(self):
         return lambda: self._handle_log_change(self._main_log_list, get_item_from_log_list)
