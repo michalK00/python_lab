@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QStackedWidget, QPushButton, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QSizePolicy
+from PySide6.QtWidgets import QStackedWidget, QWidget, QLineEdit, QLabel, QVBoxLayout, QHBoxLayout, QSizePolicy
 from PySide6.QtGui import Qt, QPixmap
 from typing import Callable
 from os import path
@@ -13,7 +13,7 @@ ERROR_MUSIC_FILEPATH: str = "./sounds/boom.mp3"
 ERROR_MUSIC_VOLUME: float = 1
 
 
-class DetailsLayout(QVBoxLayout):
+class DetailsLayout(QWidget):
     def __init__(self, app):
         super().__init__()
 
@@ -54,35 +54,35 @@ class DetailsLayout(QVBoxLayout):
         details_layout.addLayout(col1_layout)
         details_layout.addLayout(col2_layout)
         details_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.imgs: QStackedWidget = QStackedWidget()
-        self.imgs.setMaximumHeight(150)
-        self.imgs.setMaximumWidth(300)
+        self.images: QStackedWidget = QStackedWidget()
+        self.images.setMaximumHeight(120)
+        self.images.setMaximumWidth(240)
 
         other_img = QLabel()
-
         other_img.setPixmap(QPixmap(OTHER_IMG_FILEPATH))
+        other_img.setScaledContents(True)
+
         error_img = QLabel()
         error_img.setPixmap(QPixmap(ERROR_IMG_FILEPATH))
+        error_img.setScaledContents(True)
+
         pass_den_img = QLabel()
         pass_den_img.setPixmap(QPixmap(PASSWORD_DENIED_FILEPATH))
-
-        other_img.setScaledContents(True)
-        error_img.setScaledContents(True)
         pass_den_img.setScaledContents(True)
 
-        # QPixmap.scaled(other_img.pixmap(), 150, 300)
-        # QPixmap.scaled(error_img.pixmap(), 150, 300)
-        # QPixmap.scaled(pass_den_img.pixmap(), 150, 300)
-
-        self.imgs.addWidget(other_img)
-        self.imgs.addWidget(error_img)
-        self.imgs.addWidget(pass_den_img)
-        self.imgs.setVisible(False)
+        self.images.addWidget(other_img)
+        self.images.addWidget(error_img)
+        self.images.addWidget(pass_den_img)
+        self.images.setVisible(False)
 
         main_layout.addLayout(details_layout)
-        main_layout.addWidget(self.imgs)
+        main_layout.addWidget(self.images)
 
-        self.addLayout(main_layout)
+        self.setLayout(main_layout)
+        self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.MinimumExpanding)
+
+        #self.addLayout(details_layout)
+        #self.addWidget(self.images)
 
     def update_details(self, log):
         self.ip.input.setText(str(log[2]))
@@ -92,36 +92,35 @@ class DetailsLayout(QVBoxLayout):
         self._handle_msg_type(log[3])
         self.pid.input.setText(str(log[4]))
 
-    def _handle_msg_type(self, type: TypeOfMessage):
-        match type:
-            case type.ERROR:
+    def _handle_msg_type(self, type_of_msg: TypeOfMessage):
+        match type_of_msg:
+            case type_of_msg.ERROR:
                 self.media_player.play()
-                img = QLabel()
-                img.setPixmap(QPixmap(ERROR_IMG_FILEPATH))
-                self.imgs.setCurrentIndex(1)
-            case type.OTHER:
-                self.imgs.setCurrentIndex(0)
-            case type.PASSWORD_DENIED:
-                self.imgs.setCurrentIndex(2)
+                self.images.setCurrentIndex(1)
+            case type_of_msg.OTHER:
+                self.images.setCurrentIndex(0)
+            case type_of_msg.PASSWORD_DENIED:
+                self.images.setCurrentIndex(2)
 
-        self.imgs.setVisible(True)
+        self.images.setVisible(True)
 
-        self.msg_type.input.setText(str(type.name))
+        self.msg_type.input.setText(str(type_of_msg.name))
 
-    def _create_labeled_input(self, label_text):
+    @staticmethod
+    def _create_labeled_input(label_text: str):
         label = QLabel(label_text)
-        input = QLineEdit()
-        input.setReadOnly(True)
+        input_text_box = QLineEdit()
+        input_text_box.setReadOnly(True)
 
         label.setAlignment(Qt.AlignmentFlag.AlignRight)
-        input.setAlignment(Qt.AlignmentFlag.AlignRight)
-        input.setMaximumWidth(200)
-        input.setContentsMargins(0, 20, 0, 0)
+        input_text_box.setAlignment(Qt.AlignmentFlag.AlignRight)
+        input_text_box.setMaximumWidth(200)
+        input_text_box.setContentsMargins(0, 20, 0, 0)
         label.setContentsMargins(0, 20, 0, 0)
-        return LabeledInput(label, input)
+        return LabeledInput(label, input_text_box)
 
 
 class LabeledInput:
-    def __init__(self, label, input):
+    def __init__(self, label: QLabel, input_text_box: QLineEdit):
         self.label = label
-        self.input = input
+        self.input = input_text_box

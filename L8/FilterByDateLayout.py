@@ -8,7 +8,6 @@ class FilterByDateLayout(QHBoxLayout):
         super().__init__()
         self._start_date: QDateEdit = QDateEdit()
         self._start_date.setDate(QDate.currentDate())
-        self._start_date.setCalendarPopup(True)
         self._start_date.setDisplayFormat("dd/MM")
         self._start_date.dateChanged.connect(self._update_end_date)
         self._start_date_label: QLabel = QLabel("From")

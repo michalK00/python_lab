@@ -10,8 +10,8 @@ from ListWidget import ListWidget
 from IterationButtonLayout import IterationButtonLayout
 from DetailsLayout import DetailsLayout
 
-START_H: int = 1012
-START_W: int = 584
+START_H: int = 600
+START_W: int = 800
 
 BACKGROUND_MUSIC_FILEPATH: str = "./sounds/Social CREDITS.mp3"
 BACKGROUND_MUSIC_VOLUME: float = 0.1
@@ -19,7 +19,7 @@ BACKGROUND_MUSIC_VOLUME: float = 0.1
 app: QApplication = QApplication(sys.argv)
 main_layout: QVBoxLayout = QVBoxLayout()
 
-window: MainWindow = MainWindow(START_H, START_W)
+window: MainWindow = MainWindow(START_W, START_H)
 
 details: DetailsLayout = DetailsLayout(app)
 stacked_list: ListWidget = ListWidget(details)
@@ -39,7 +39,7 @@ main_layout.addLayout(filter_layout)
 
 master_detail_layout: QHBoxLayout = QHBoxLayout()
 master_detail_layout.addWidget(stacked_list)
-master_detail_layout.addLayout(details)
+master_detail_layout.addWidget(details)
 
 main_layout.addLayout(master_detail_layout)
 main_layout.addWidget(iteration_button_layout)
