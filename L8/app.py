@@ -21,7 +21,7 @@ main_layout: QVBoxLayout = QVBoxLayout()
 
 window: MainWindow = MainWindow(START_H, START_W)
 
-details: DetailsLayout = DetailsLayout()
+details: DetailsLayout = DetailsLayout(app)
 stacked_list: ListWidget = ListWidget(details)
 file_layout: FileLoadingLayout = FileLoadingLayout()
 file_layout.connect_button(stacked_list.load_main_list)
