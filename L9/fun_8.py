@@ -8,10 +8,10 @@ from SSHLogFactory import SSHLogFactory
 
 
 def demonstrate(
-    log_entries: List[SSHLogEntry], log_journal: SSHLogJournal, log_users: List[SSHUser]
+        log_entries: List[SSHLogEntry], log_journal: SSHLogJournal, log_users: List[SSHUser]
 ) -> bool:
     validation_list: List[SSHLogEntry | SSHLogJournal | SSHUser] = (
-        log_entries + log_journal.entries + log_users
+            log_entries + log_journal.entries + log_users
     )
 
     for elem in validation_list:
@@ -21,13 +21,11 @@ def demonstrate(
 
 
 if __name__ == "__main__":
-    message0: str = """Dec 20 06:55:33 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message1: str = """Dec 10 06:55:48 LabSZ sshd[24100]: 
-        Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
-    message2: str = (
-        """Dec 31 23:56:28 LabSZ sshd[3101]: Invalid user vyatta from 202.107.207.123"""
-    )
+    message0: str = "Dec 20 06:55:33 LabSZ sshd[24100]: " \
+                    "Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"
+    message1: str = "Dec 10 06:55:48 LabSZ sshd[24100]: " \
+                    "Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"
+    message2: str = "Dec 31 23:56:28 LabSZ sshd[3101]: Invalid user vyatta from 202.107.207.123"
 
     journal: SSHLogJournal = SSHLogJournal()
     journal.append(message0)
