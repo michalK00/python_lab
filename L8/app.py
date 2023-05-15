@@ -13,7 +13,7 @@ from DetailsLayout import DetailsLayout
 START_H: int = 600
 START_W: int = 800
 
-BACKGROUND_MUSIC_FILEPATH: str = "./sounds/Social CREDITS.mp3"
+BACKGROUND_MUSIC_FILEPATH: str = "L8\sounds\Social CREDITS.mp3"
 BACKGROUND_MUSIC_VOLUME: float = 0.1
 
 app: QApplication = QApplication(sys.argv)
