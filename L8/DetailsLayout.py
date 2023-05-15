@@ -9,7 +9,7 @@ from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
 ERROR_IMG_FILEPATH: str = "./img/error.png"
 OTHER_IMG_FILEPATH: str = "./img/other.jpg"
 PASSWORD_DENIED_FILEPATH: str = "./img/password_denied.png"
-ERROR_MUSIC_FILEPATH: str = "./sounds/boom.mp3"
+ERROR_MUSIC_FILEPATH: str = "L8/sounds/boom.mp3"
 ERROR_MUSIC_VOLUME: float = 1
 
 
@@ -79,10 +79,11 @@ class DetailsLayout(QWidget):
         main_layout.addWidget(self.images)
 
         self.setLayout(main_layout)
-        self.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.MinimumExpanding)
+        self.setSizePolicy(QSizePolicy.Policy.Maximum,
+                           QSizePolicy.Policy.MinimumExpanding)
 
-        #self.addLayout(details_layout)
-        #self.addWidget(self.images)
+        # self.addLayout(details_layout)
+        # self.addWidget(self.images)
 
     def update_details(self, log):
         self.ip.input.setText(str(log[2]))
