@@ -6,11 +6,11 @@ import ipaddress
 import re
 import sys
 import utils
-from typing import Iterator, List
+from typing import Iterator, List, Union, Match, SupportsIndex
 
 
 class SSHLogJournal:
-    def __init__(self, entries: List[SSHLogEntry] = None):
+    def __init__(self, entries: List[SSHLogEntry]):
         if entries is None:
             entries = []
         self.entries: List[SSHLogEntry] = entries
@@ -18,21 +18,22 @@ class SSHLogJournal:
     def __len__(self) -> int:
         return len(self.entries)
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[SSHLogEntry]:
         return iter(self.entries)
 
-    def __contains__(self, item) -> bool:
+    def __contains__(self, item: SSHLogEntry) -> bool:
         return item in self.entries
 
     def append(self, log_entry: str) -> bool:
-        ssh_log: SSHLogEntry = SSHLogFactory.get_log_entry(log_entry)
+        # mypy can't reach SSHLogFactory
+        ssh_log: SSHLogEntry = SSHLogFactory.get_log_entry(log_entry) # type: ignore
 
         if ssh_log.validate():
             self.entries.append(ssh_log)
             return True
         return False
 
-    def filter_by_user(self, username: str = None) -> List[SSHLogEntry]:
+    def filter_by_user(self, username: str | None = None) -> List[SSHLogEntry]:
         return [some_entry for some_entry in self.entries if some_entry.user == username]
 
     def __getattr__(self, name: str) -> List[SSHLogEntry] | None:
@@ -49,14 +50,15 @@ class SSHLogJournal:
         elif name.startswith("date_"):
             # we only give the month and the day SO there will be more results :D
             day_and_month_regex: str = r"([A-Za-z]{3})(\D+)(\d+)"
-            match: re.Match[str] = re.search(day_and_month_regex, name[5:])
+            match: Match[str] | None = re.search(day_and_month_regex, name[5:])
+
             if not match:
                 return None
 
             month: str = match.group(1)
             day: str = match.group(3)
-            date_obj: datetime = datetime.strptime(
-                f"{day} {month} {datetime.now().year}", "%d %b %Y")
+            date_obj: datetime = datetime.strptime(f"{day} {month} {datetime.now().year}", "%d %b %Y")
+
             return [some_entry for some_entry in self.entries if
                     (some_entry.date.month, some_entry.date.day) == (date_obj.month, date_obj.day)]
 
@@ -64,7 +66,7 @@ class SSHLogJournal:
             raise AttributeError(
                 f"'{type(self).__name__}' incorrect attribute '{name}'")
 
-    def __getitem__(self, index: int) -> List[SSHLogEntry] | SSHLogEntry:
+    def __getitem__(self, index: SupportsIndex | slice) -> List[SSHLogEntry] | SSHLogEntry:
         if isinstance(index, slice):
             start: int
             stop: int
@@ -79,7 +81,7 @@ if __name__ == "__main__":
     message0: str = """Dec 28 06:55:33 LabSZ sshd[24100]: 
         Failed password for invalid user webmaster from 173.234.31.186 port 38926 ssh2"""
     test_log: SSHLogEntry = SSHLogPasswordDenied.SSHLogPasswordDenied(message0)
-    journal: SSHLogJournal = SSHLogJournal()
+    journal: SSHLogJournal = SSHLogJournal([])
 
     # load logs into journal
 

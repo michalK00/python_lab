@@ -6,52 +6,56 @@ from SSHLogError import SSHLogError
 from SSHLogOther import SSHLogOther
 from SSHLogEntry import get_message_type
 from type_enum import TypeOfMessage as Msg
-from typing import Dict, Type
+from typing import Type, Dict, Any, TypeVar
+
+T = TypeVar('T', bound='SSHLogFactory')
 
 
-# pre declaration
 class SSHLogFactory(metaclass=ABCMeta):
     pass
 
 
 class SSHErrorLogFactory(SSHLogFactory):
-    @staticmethod
-    def create_ssh_entry_obj(log: str) -> SSHLogError:
+    @classmethod
+    def create_ssh_entry_obj(cls: Type[T], log: str) -> SSHLogError:
         return SSHLogError(log)
 
 
 class SSHPasswordAcceptedLogFactory(SSHLogFactory):
-    @staticmethod
-    def create_ssh_entry_obj(log: str) -> SSHLogPasswordAccepted:
+    @classmethod
+    def create_ssh_entry_obj(cls: Type[T], log: str) -> SSHLogPasswordAccepted:
         return SSHLogPasswordAccepted(log)
 
 
 class SSHPasswordDeniedLogFactory(SSHLogFactory):
-    @staticmethod
-    def create_ssh_entry_obj(log: str) -> SSHLogPasswordDenied:
+    @classmethod
+    def create_ssh_entry_obj(cls: Type[T], log: str) -> SSHLogPasswordDenied:
         return SSHLogPasswordDenied(log)
 
 
 class SSHOtherLogFactory(SSHLogFactory):
-    @staticmethod
-    def create_ssh_entry_obj(log: str) -> SSHLogOther:
+    @classmethod
+    def create_ssh_entry_obj(cls: Type[T], log: str) -> SSHLogOther:
         return SSHLogOther(log)
 
 
-class SSHLogFactory(metaclass=ABCMeta):
-    @staticmethod
+class SSHLogFactory(metaclass=ABCMeta):  # type: ignore
+    @classmethod
     @abstractmethod
-    def create_ssh_entry_obj(log: str) -> SSHLogEntry:
+    def create_ssh_entry_obj(cls: Type[T], log: str) -> SSHLogEntry:
         pass
 
-    @staticmethod
-    def get_log_entry(log_entry: str) -> SSHLogEntry:
-        factories_dict: Dict[Msg, Type[SSHLogFactory]] = {
+    @classmethod
+    def get_log_entry(cls: Type[T], log_entry: str) -> Any:
+        factory: Dict[Msg, Type[SSHLogFactory]] = {
             Msg.ERROR: SSHErrorLogFactory,
             Msg.PASSWORD_DENIED: SSHPasswordDeniedLogFactory,
             Msg.PASSWORD_ACCEPTED: SSHPasswordAcceptedLogFactory,
             Msg.OTHER: SSHOtherLogFactory
         }
 
-        return factories_dict[get_message_type(log_entry)] \
-            .create_ssh_entry_obj(log_entry)
+        res = factory[get_message_type(log_entry)]
+
+        if not isinstance(res, SSHLogFactory):
+            return None
+        return res.create_ssh_entry_obj(log_entry)

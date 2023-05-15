@@ -118,5 +118,6 @@ class SSHLogEntry(metaclass=ABCMeta):
     def __gt__(self, other: "SSHLogEntry") -> bool:
         return (self.pid, self.date, self._raw_log) > (other.pid, other.date, other._raw_log)
 
-    def __eq__(self, other) -> bool:
+    # ignoring mypy type, as other has to be SSHLogFactory to be comparable
+    def __eq__(self, other: "SSHLogEntry") -> bool:  # type: ignore
         return not (self.__lt__(other) or self.__gt__(other))
