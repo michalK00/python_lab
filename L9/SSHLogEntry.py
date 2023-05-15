@@ -21,9 +21,9 @@ def get_message_type(row: str) -> Msg:
         return Msg.OTHER
 
 
-def get_date(row: str) -> datetime:
+def get_date(row: str) -> datetime | None:
     date_regex: str = r'([A-z]{3})\s+(0?[1-9]|[12][0-9]|3[01]) (?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)'
-    match: Optional[Match[str]] = re.search(date_regex, row)
+    match: Match[str] | None = re.search(date_regex, row)
     if match:
         month: str = match.group(1)
         day: str = match.group(2)
@@ -35,40 +35,44 @@ def get_date(row: str) -> datetime:
         date_obj: datetime = datetime.strptime(
             date_string, "%d %b %Y %H:%M:%S")
         return date_obj
+    else:
+        return None
 
 
-def get_pid(row: str) -> int:
+def get_pid(row: str) -> int | None:
     pid_regex: str = r'sshd\[(\d+)\]'
-    match: Optional[Match[str]] = re.search(pid_regex, row)
+    match: Match[str] | None = re.search(pid_regex, row)
     if match:
         return int(match.group(1))
+    else:
+        return None
 
 
-def get_user_from_log(row: str) -> str:
+def get_user_from_log(row: str) -> str | None:
     user_regex: str = r'user (\w+)'
-    match: Optional[Match[str]] = re.search(user_regex, row)
+    match: Match[str] | None = re.search(user_regex, row)
     if match:
         return match.group(1)
+    else:
+        return None
 
 
 def get_ipv4s_from_log(row: str) -> IPv4Address | None:
     ip_regex: str = r'(?:\d{1,3}\.){3}\d{1,3}'
     match: List[str] = re.findall(ip_regex, row)
     if match:
-        try:
-            return IPv4Address(match[0])
-        except ...:
-            return None
-    return None
+        return IPv4Address(match[0])
+    else:
+        return None
 
 
 class SSHLogEntry(metaclass=ABCMeta):
     def __init__(self, log: str, message_type: Msg):
-        self.date: datetime = get_date(log)
-        self.user: str = get_user_from_log(log)
-        self.ip_v4: IPv4Address = get_ipv4s_from_log(log)
+        self.date: datetime | None = get_date(log)
+        self.user: str | None = get_user_from_log(log)
+        self.ip_v4: IPv4Address | None = get_ipv4s_from_log(log)
         self.message_type: Msg = message_type
-        self.pid: int = get_pid(log)
+        self.pid: int | None = get_pid(log)
         self._raw_log: str = log
 
     def __str__(self) -> str:
@@ -84,7 +88,7 @@ class SSHLogEntry(metaclass=ABCMeta):
                 and self.message_type == get_message_type(self._raw_log)
                 and self.pid == get_pid(self._raw_log))
 
-    def get_ip(self) -> IPv4Address:
+    def get_ip(self) -> IPv4Address | None:
         return self.ip_v4
 
     @property
