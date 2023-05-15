@@ -1,5 +1,5 @@
 import re
-import datetime
+from datetime import datetime
 
 
 class SSHUser:

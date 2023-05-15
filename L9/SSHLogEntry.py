@@ -3,7 +3,7 @@ from datetime import datetime
 from type_enum import TypeOfMessage as Msg
 from ipaddress import IPv4Address
 from abc import ABCMeta, abstractmethod
-from typing import Match, List, Tuple
+from typing import Match, List, Tuple, Optional
 
 
 def get_message_type(row: str) -> Msg:
@@ -23,7 +23,7 @@ def get_message_type(row: str) -> Msg:
 
 def get_date(row: str) -> datetime:
     date_regex: str = r'([A-z]{3})\s+(0?[1-9]|[12][0-9]|3[01]) (?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)'
-    match: Match[str] = re.search(date_regex, row)
+    match: Optional[Match[str]] = re.search(date_regex, row)
     if match:
         month: str = match.group(1)
         day: str = match.group(2)
@@ -32,20 +32,21 @@ def get_date(row: str) -> datetime:
         second: str = match.group(5)
 
         date_string: str = f"{day} {month} {datetime.now().year} {hour}:{minute}:{second}"
-        date_obj: datetime = datetime.strptime(date_string, "%d %b %Y %H:%M:%S")
+        date_obj: datetime = datetime.strptime(
+            date_string, "%d %b %Y %H:%M:%S")
         return date_obj
 
 
 def get_pid(row: str) -> int:
     pid_regex: str = r'sshd\[(\d+)\]'
-    match: Match[str] = re.search(pid_regex, row)
+    match: Optional[Match[str]] = re.search(pid_regex, row)
     if match:
         return int(match.group(1))
 
 
 def get_user_from_log(row: str) -> str:
     user_regex: str = r'user (\w+)'
-    match: Match[str] = re.search(user_regex, row)
+    match: Optional[Match[str]] = re.search(user_regex, row)
     if match:
         return match.group(1)
 
