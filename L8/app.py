@@ -49,14 +49,19 @@ audio.setVolume(BACKGROUND_MUSIC_VOLUME)
 
 media_player: QMediaPlayer = QMediaPlayer()
 media_player.setAudioOutput(audio)
-media_player.setSource(QUrl.fromLocalFile(BACKGROUND_MUSIC_FILEPATH))
+aa = QUrl.fromLocalFile(BACKGROUND_MUSIC_FILEPATH)
+print(media_player.mediaStatus())
+
+media_player.setSource(aa)
 media_player.setLoops(media_player.Loops.Infinite)
+print(media_player.mediaStatus())
+
 media_player.play()
+
 
 main_widget: QWidget = QWidget()
 main_widget.setLayout(main_layout)
 window.setCentralWidget(main_widget)
-
 window.show()
 
 if __name__ == "__main__":
