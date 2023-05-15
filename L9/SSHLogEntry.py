@@ -1,7 +1,7 @@
 import re
 from datetime import datetime
 from type_enum import TypeOfMessage as Msg
-from ipaddress import IPv4Address
+from ipaddress import IPv4Address, AddressValueError
 from abc import ABCMeta, abstractmethod
 from typing import Match, List
 
@@ -60,7 +60,10 @@ def get_ipv4s_from_log(row: str) -> IPv4Address | None:
     ip_regex: str = r"(?:\d{1,3}\.){3}\d{1,3}"
     match: List[str] = re.findall(ip_regex, row)
     if match:
-        return IPv4Address(match[0])
+        try:
+            return IPv4Address(match[0])
+        except AddressValueError:
+            return None
     else:
         return None
 
