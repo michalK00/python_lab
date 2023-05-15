@@ -10,7 +10,9 @@ from typing import Iterator, List
 
 
 class SSHLogJournal:
-    def __init__(self, entries: List[SSHLogEntry] = []):
+    def __init__(self, entries: List[SSHLogEntry] = None):
+        if entries is None:
+            entries = []
         self.entries: List[SSHLogEntry] = entries
 
     def __len__(self) -> int:
@@ -33,7 +35,7 @@ class SSHLogJournal:
     def filter_by_user(self, username: str = None) -> List[SSHLogEntry]:
         return [some_entry for some_entry in self.entries if some_entry.user == username]
 
-    def __getattr__(self, name: str) -> List[SSHLogEntry]:
+    def __getattr__(self, name: str) -> List[SSHLogEntry] | None:
         if name.startswith("ip_"):
             # splits on non digits and then glue together with "." as separator, then turn to ip
             ip: ipaddress.IPv4Address = ipaddress.IPv4Address(
@@ -49,7 +51,7 @@ class SSHLogJournal:
             day_and_month_regex: str = r"([A-Za-z]{3})(\D+)(\d+)"
             match: re.Match[str] = re.search(day_and_month_regex, name[5:])
             if not match:
-                return
+                return None
 
             month: str = match.group(1)
             day: str = match.group(3)
@@ -62,7 +64,7 @@ class SSHLogJournal:
             raise AttributeError(
                 f"'{type(self).__name__}' incorrect attribute '{name}'")
 
-    def __getitem__(self, index: int) -> SSHLogEntry:
+    def __getitem__(self, index: int) -> List[SSHLogEntry] | SSHLogEntry:
         if isinstance(index, slice):
             start: int
             stop: int
