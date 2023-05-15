@@ -3,8 +3,8 @@ from type_enum import TypeOfMessage as Msg
 
 
 class SSHLogOther(SSHLogEntry):
-    def __init__(self, log):
+    def __init__(self, log: str):
         super().__init__(log, Msg.OTHER)
 
-    def validate(self):
+    def validate(self) -> bool:
         return True
