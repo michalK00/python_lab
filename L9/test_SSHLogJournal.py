@@ -9,7 +9,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    "log, expectedType",
+    "log, expected_type",
     [
         (
                 "Dec 10 09:32:20 LabSZ sshd[24680]: Accepted password for fztu from 119.137.62.142 port 49116 ssh2",
@@ -32,7 +32,7 @@ import pytest
         ),
     ],
 )
-def test_append(log: str, expectedType: Type[SSHLogEntry]) -> None:
+def test_append(log: str, expected_type: Type[SSHLogEntry]) -> None:
     journal: SSHLogJournal = SSHLogJournal([])
     journal.append(log)
-    assert type(journal[0]) is expectedType
+    assert type(journal[0]) is expected_type
