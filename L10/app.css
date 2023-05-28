@@ -1,0 +1,20 @@
+Screen {
+    layout: horizontal;
+}
+
+#info {
+    margin-left: 1;
+}
+
+.info-item {
+    margin-top: 1;
+}
+
+#table-view {
+    overflow: auto scroll;
+    min-width: 100%;
+}
+
+#table {
+    width: auto;
+}

@@ -24,3 +24,6 @@
 /L10/WRM_CSV/historia_przejazdow_2021-11.csv
 /L10/WRM_CSV/historia_przejazdow_2021-12.csv
 /L10/rentals.db
+/L10/__pycache__
+/L10/.idea
+/backup/*

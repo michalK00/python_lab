@@ -22,7 +22,9 @@ def find_all_stations(engine):
     with Session(engine) as session:
         statement = select(Stations)
         stations = session.execute(statement).all()
-        return stations
+        # perhaps i should to change it to objects
+        stations_list = [(station[0].station_id, station[0].station_name) for station in stations]
+        return stations_list
 
 def find_all_rentals_with_same_rental_and_return(station_name, engine):
     with Session(engine) as session:
@@ -45,6 +47,5 @@ if __name__ == "__main__":
     # find_all_by_rental_station("Plac Uniwersytecki (UWr)", engine)
     # print("-" * 120)
     # find_all_by_return_station("Plac Uniwersytecki (UWr)", engine)
-    # find_all_stations(engine)
     # print(ws.calculate_average_ride_time(find_all_by_rental_station("Plac Uniwersytecki (UWr)", engine)))
     # print(ws.calculate_no_of_bikes_on_station(find_all_by_rental_station("Plac Uniwersytecki (UWr)", engine)))
