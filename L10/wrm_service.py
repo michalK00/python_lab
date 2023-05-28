@@ -1,0 +1,27 @@
+import math
+import pandas as pd
+import datetime
+import wrm_repository as repo
+from datetime import timedelta
+
+def calculate_average_ride_time_rental_station(station_name, engine):
+    rentals = repo.find_all_rentals_by_rental_station(station_name, engine)
+    return _calculate_average_ride_time(rentals)
+
+def calculate_average_ride_time_return_station(station_name, engine):
+    rentals = repo.find_all_rentals_by_return_station(station_name, engine)
+    return _calculate_average_ride_time(rentals)
+
+def calculate_average_ride_time_same_stations(station_name, engine):
+    rentals = repo.find_all_rentals_with_same_rental_and_return(station_name, engine)
+    return _calculate_average_ride_time(rentals)
+
+def calculate_no_of_bikes_on_station(station_name, engine):
+    rentals = repo.find_all_rentals_by_return_station(station_name, engine)
+    unique_bikes_set = set([rental[0].bike_number for rental in rentals])
+    return len(unique_bikes_set)
+
+def _calculate_average_ride_time(rentals):
+    ride_times = [rental[0].end_time - rental[0].start_time for rental in rentals]
+    average_ride_time = sum(ride_times, datetime.timedelta(0)) / len(ride_times)
+    return average_ride_time

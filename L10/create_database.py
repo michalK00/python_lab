@@ -4,6 +4,7 @@ from sys import argv
 from os import path
 
 DBMS_NAME = "sqlite"
+ 
 
 
 def read_db_name_from_argv() -> str:

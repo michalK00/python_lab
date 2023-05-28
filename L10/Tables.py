@@ -17,6 +17,9 @@ class Stations(Base):
     )
     station_name: Mapped[str] = mapped_column(String(128))
 
+    def __repr__(self) -> str:
+        return f"station_id: {self.station_id} station_name: {self.station_name}"
+
 
 class Rentals(Base):
     __tablename__ = RENTALS_TABLE_NAME
@@ -30,3 +33,6 @@ class Rentals(Base):
 
     rental_station = relationship("Stations", foreign_keys=[rental_station_id])
     return_station = relationship("Stations", foreign_keys=[return_station_id])
+
+    def __repr__(self) -> str:
+        return f"id: {self.id} bike_number: {self.bike_number} rental_station_id: {self.rental_station_id} return_station_id: {self.return_station_id}"
