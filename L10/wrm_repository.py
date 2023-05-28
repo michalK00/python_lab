@@ -1,5 +1,5 @@
-from sqlalchemy import select, create_engine, Engine, select
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship, Session
+from sqlalchemy import select, create_engine, select
+from sqlalchemy.orm import Session
 from create_database import DBMS_NAME, create_db
 from Tables import Rentals, Stations
 from load_data import df_to_db, load_csv_to_pd_df, read_csv_and_db_name_from_argv, path

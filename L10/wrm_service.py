@@ -1,8 +1,6 @@
-import math
-import pandas as pd
 import datetime
 import wrm_repository as repo
-from datetime import timedelta
+
 
 def calculate_average_ride_time_rental_station(station_name, engine):
     rentals = repo.find_all_rentals_by_rental_station(station_name, engine)
