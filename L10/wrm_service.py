@@ -28,5 +28,7 @@ def find_get_all_stations(engine):
 
 def _calculate_average_ride_time(rentals):
     ride_times = [rental[0].end_time - rental[0].start_time for rental in rentals]
-    average_ride_time = sum(ride_times, datetime.timedelta(0)) / len(ride_times)
-    return average_ride_time
+    if len(ride_times) != 0:
+        return sum(ride_times, datetime.timedelta(0)) / len(ride_times)
+    else:
+        return 0
